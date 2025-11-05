@@ -9,4 +9,4 @@ To help address this problem, we propose **_LinkedUp_**, a social media-style ap
 1. <code>node -v</code>: Make sure node is installed. Download from <link>https://nodejs.org/en</link> if not.
 2. <code>cd linkedup</code>: Go to the linkedup folder.
 3. <code>npm run dev</code>: Start the dev server.
-4. Navigate to <link>http://localhost:3000</link>.
+4. Navigate to <link>http://localhost:3000/log-in</link> to open the Log-in page.
