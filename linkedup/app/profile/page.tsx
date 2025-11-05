@@ -64,7 +64,7 @@ export default function ProfilePage() {
                     Username
                 </label>
                 <input type='text' value={username} onChange={(e) => setUsername(e.target.value)} 
-                       className='w-full border border-gray-200 rounded-md p-2 mb-3 text-black'/>
+                       className='w-full border border-gray-200 rounded-md p-2 mb-3 text-black focus:outline-none focus:ring-2 focus:ring-sky-300'/>
 
                 <label className='font-bold text-black mb-1'>
                     Email
@@ -89,7 +89,7 @@ export default function ProfilePage() {
                 </label>
                 <div className='flex items-center gap-3 mb-4'>
                     <input type={showNewPassword ? 'text' : 'password'} value={userNewPassword} onChange={(e) => setUserNewPassword(e.target.value)} 
-                           className='w-full border border-gray-200 rounded-md p-2 mb-2 text-black focus:outline-none tracking-wide'/>
+                           className='w-full border border-gray-200 rounded-md p-2 mb-2 text-black focus:outline-none focus:ring-2 focus:ring-sky-300 tracking-wide'/>
                     <button onClick={() => setShowNewPassword(!showNewPassword)}
                             className='text-xs px-2 w-16 rounded-md text-center text-black border border-gray-300 bg-gray-100'>
                         {showNewPassword ? 'Hide' : 'Show'}
