@@ -67,7 +67,7 @@ export default function MainPage() {
             <main className='flex-grow flex items-center justify-center'>
                 <div className='w-full max-w-sm rounded-2xl border bg-white p-5 shadow-sm min-h-[700px]'>
                     <header className='flex gap-5 items-center pb-4 border-b text-gray-300'>
-                        {GoToProfilePage()}
+                        <GoToProfilePage/>
                         <div>
                             <p className='text-gray-500 font-bold'>
                                 Welcome back,
@@ -79,7 +79,7 @@ export default function MainPage() {
                     </header>
 
                     <section className='mt-4'>
-                        <button onClick={() => setMyListOpen((e) => !e)} className='w-full flex items-center justify-between py-2 text-left'>
+                        <button onClick={() => setMyListOpen(!myListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
                             <h2 className='text-lg font-bold text-black'>My Activities</h2>
                         </button>
                         {myListOpen && (
@@ -90,7 +90,7 @@ export default function MainPage() {
                     </section>
 
                     <section className='mt-4'>
-                        <button onClick={() => setFeedListOpen((e) => !e)} className='w-full flex items-center justify-between py-2 text-left'>
+                        <button onClick={() => setFeedListOpen(!feedListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
                             <h2 className='text-lg font-bold text-black'>Activity Feeds</h2>
                         </button>
                         {feedListOpen && (
@@ -98,7 +98,7 @@ export default function MainPage() {
                             <ListBox items={activityFeedsList} />
                             </>
                         )}
-                        {GoToActivityCreationPage()}
+                        <GoToActivityCreationPage/>
                     </section>
                 </div>
             </main>
