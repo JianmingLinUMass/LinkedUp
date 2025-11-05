@@ -1,4 +1,4 @@
-'use client' // turns this file into a client component
+'use client'
 
 import Link from 'next/link';
 import { useState } from 'react';
@@ -15,10 +15,10 @@ export default function LoginPage() {
     const handleSubmitForm = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 'command + option + J' to open console in Chrome
-        console.log('Preceed to log in.')
-        console.log('Received email:', email)
-        console.log('Recieved password:', password)
+        // Step1: Verify whether the combination of input email and password exist in database.
+
+        // Step2: Log in successfully. Open the Main Page.
+        window.location.href = '/main';
     }
 
     return(
