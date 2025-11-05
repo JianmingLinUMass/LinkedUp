@@ -1,14 +1,21 @@
-import Image from "next/image";
-import MainPage from "./main/page";
-import LoginPage from "./log-in/page";
-import ProfilePage from "./profile/page";
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <>
-      <LoginPage />
-      <MainPage />
-      <ProfilePage />
-    </>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    // Dummy auth logic
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    if (isLoggedIn) {
+      router.push('/main');
+    } else {
+      router.push('/log-in');
+    }
+  }, [router]);
+
+  return null;
 }

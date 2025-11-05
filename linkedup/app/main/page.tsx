@@ -66,16 +66,27 @@ export default function MainPage() {
         <div className='min-h-screen flex flex-col justify-center bg-white'>
             <main className='flex-grow flex items-center justify-center'>
                 <div className='w-full max-w-sm rounded-2xl border bg-white p-5 shadow-sm min-h-[700px]'>
-                    <header className='flex gap-5 items-center pb-4 border-b text-gray-300'>
-                        <GoToProfilePage/>
-                        <div>
-                            <p className='text-gray-500 font-bold'>
-                                Welcome back,
-                            </p>
-                            <p className='text-gray-500 font-bold'>
-                                {username}
-                            </p>
+                    <header className='flex gap-5 items-center justify-between pb-4 border-b text-gray-300'>
+                        <div className='flex gap-5 items-center'>
+                            <GoToProfilePage/>
+                            <div>
+                                <p className='text-gray-500 font-bold'>
+                                    Welcome back,
+                                </p>
+                                <p className='text-gray-500 font-bold'>
+                                    {username}
+                                </p>
+                            </div>
                         </div>
+                        <button 
+                            onClick={() => {
+                                localStorage.removeItem('isLoggedIn');
+                                window.location.href = '/';
+                            }}
+                            className='text-sm text-gray-500 hover:text-gray-700 font-bold'
+                        >
+                            Logout
+                        </button>
                     </header>
 
                     <section className='mt-4'>
