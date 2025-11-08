@@ -44,7 +44,7 @@ export default function ProfilePage() {
     return(
         <div className='min-h-screen flex flex-col items-center bg-white'>
             <main className='w-full max-w-sm rounded-2xl border bg-white p-5 mt-4 flex flex-col'>
-                <div className='relative flex items-center mb-4'>
+                <div className='relative flex items-center mb-6'>
                     <GoBackToMainPage/>
                     <h1 className='text-2xl font-bold text-sky-500 mx-auto'>
                         My Profile

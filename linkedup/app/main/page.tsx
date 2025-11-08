@@ -17,11 +17,10 @@ const activityFeedsList: Activity[] = [
     {title: 'Coffee Chat',       time: '5:30PM, 11/06'},
     {title: 'Group Study',       time: '8:15PM, 11/06'},
     {title: 'Morning Frisbee',   time: '7:30AM, 11/07'},
-    {title: 'Morning Jog',       time: '7:30AM, 11/07'},
     {title: 'Hiking Meetup',     time: '9:00AM, 11/07'},
 ]
 
-function ListBox({items}: {items: Activity[]}) {
+function ActivityBox({items}: {items: Activity[]}) {
     return (
         <div className='rounded-md border divide-y'>
             {items.map((activity, index) => (
@@ -42,6 +41,16 @@ function GoToActivityCreationPage() {
         <button onClick={() => router.push('/activity-creation')} 
                 className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition'>
             Post an Activity
+        </button>
+    );
+}
+function GoToActivityHistoryPage() {
+    const router = useRouter();
+
+    return (
+        <button onClick={() => router.push('/activity-history')} 
+                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition'>
+            Show More
         </button>
     );
 }
@@ -95,9 +104,10 @@ export default function MainPage() {
                         </button>
                         {myListOpen && (
                             <>
-                            <ListBox items={myActivityLst} />
+                            <ActivityBox items={myActivityLst} />
                             </>
                         )}
+                        <GoToActivityHistoryPage/>
                     </section>
 
                     <section className='mt-4'>
@@ -106,7 +116,7 @@ export default function MainPage() {
                         </button>
                         {feedListOpen && (
                             <>
-                            <ListBox items={activityFeedsList} />
+                            <ActivityBox items={activityFeedsList} />
                             </>
                         )}
                         <GoToActivityCreationPage/>
