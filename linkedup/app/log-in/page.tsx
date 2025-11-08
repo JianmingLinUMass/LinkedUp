@@ -36,11 +36,12 @@ export default function LoginPage() {
                         <label className='block text-black font-bold mb-1'>
                             Email
                         </label>
-                        <input type='email' className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
-                            placeholder='Enter your email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required 
+                        <input type='email' 
+                               className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
+                               placeholder='Enter your email'
+                               value={email}
+                               onChange={(e) => setEmail(e.target.value)}
+                               required 
                         />
                     </div>
 
@@ -48,16 +49,18 @@ export default function LoginPage() {
                         <label className='block text-black font-bold mb-1'>
                             Password
                         </label>
-                        <input type='password' className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
-                            placeholder='Enter your password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required 
+                        <input type='password' 
+                               className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
+                               placeholder='Enter your password'
+                               value={password}
+                               onChange={(e) => setPassword(e.target.value)}
+                               required 
                         />
                     </div>
 
                     <div>
-                        <button type='submit' className='w-full bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 rounded-md transition'>
+                        <button type='submit' 
+                                className='w-full bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 rounded-md transition'>
                             Log In
                         </button>
                     </div>
