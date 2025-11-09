@@ -3,14 +3,15 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import CalendarTimeline from '@/components/CalendarTimeline';
 
 type Activity = {title: string; time: string};
 
 const myActivityLst: Activity[] = [
     {title: 'Morning Jog',       time: '7:00AM, 11/07'},
-    {title: 'Club Meetup',       time: '4:00PM, 11/07'},
-    {title: 'Music Jam Session', time: '5:30PM, 11/07'},
-    {title: 'Coding Night',      time: '8:00PM, 11/07'},
+    {title: 'Club Meetup',       time: '4:00PM, 11/08'},
+    {title: 'Music Jam Session', time: '5:30PM, 11/09'},
+    {title: 'Coding Night',      time: '8:00PM, 11/10'},
 ]
 
 const activityFeedsList: Activity[] = [
@@ -50,7 +51,7 @@ function GoToActivityHistoryPage() {
     return (
         <button onClick={() => router.push('/activity-history')} 
                 className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition'>
-            Show More
+            Activity History
         </button>
     );
 }
@@ -70,11 +71,12 @@ export default function MainPage() {
 
     const [myListOpen, setMyListOpen] = useState(true);
     const [feedListOpen, setFeedListOpen] = useState(true);
+    const [showCalendar, setShowCalendar] = useState(false);
 
     return(
-        <div className='min-h-screen flex flex-col justify-center bg-white'>
+        <div className='min-h-screen flex flex-col bg-white px-4 py-4 md:justify-center md:px-0'>
             <main className='flex-grow flex items-center justify-center'>
-                <div className='w-full max-w-sm rounded-2xl border bg-white p-5 shadow-sm min-h-[700px]'>
+                <div className='w-full max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-6xl rounded-2xl border bg-white p-4 md:p-8 shadow-sm min-h-[600px] md:min-h-[700px]'>
                     <header className='flex gap-5 items-center justify-between pb-4 border-b text-gray-300'>
                         <div className='flex gap-5 items-center'>
                             <GoToProfilePage/>
@@ -97,15 +99,27 @@ export default function MainPage() {
                             Logout
                         </button>
                     </header>
-
+                    
                     <section className='mt-4'>
-                        <button onClick={() => setMyListOpen(!myListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
-                            <h2 className='text-lg font-bold text-black'>My Activities</h2>
-                        </button>
-                        {myListOpen && (
-                            <>
-                            <ActivityBox items={myActivityLst} />
-                            </>
+                        <div className='flex items-center justify-between py-2'>
+                            <button onClick={() => setMyListOpen(!myListOpen)} className='text-left cursor-pointer'>
+                                <h2 className='text-lg font-bold text-black'>My Activities</h2>
+                            </button>
+                            <button 
+                                onClick={() => setShowCalendar(!showCalendar)}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+                                    showCalendar 
+                                        ? 'bg-sky-400 text-white' 
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                }`}
+                            >
+                                {showCalendar ? 'List' : 'Calendar'}
+                            </button>
+                        </div>
+                        {showCalendar ? (
+                            <CalendarTimeline activities={myActivityLst} />
+                        ) : (
+                            myListOpen && <ActivityBox items={myActivityLst} />
                         )}
                         <GoToActivityHistoryPage/>
                     </section>
