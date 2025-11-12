@@ -28,12 +28,12 @@ export default function SignupPage() {
     }
 
     return(
-        <div className='min-h-screen flex items-center justify-center bg-white'>
-            <div className='bg-white p-8 rounded-2x1 shadow-md w-full max-w-sm border'>
-                <h1 className='text-4xl font-bold text-sky-500 text-center mb-1'>
+        <div className='min-h-screen flex items-center justify-center bg-white px-4'>
+            <div className='bg-white p-6 md:p-8 rounded-2xl shadow-md w-full max-w-sm md:max-w-md border'>
+                <h1 className='text-3xl md:text-4xl font-bold text-sky-500 text-center mb-1'>
                     Sign Up
                 </h1>
-                <p className='text-center text-gray-500 mb-8 font-bold'>
+                <p className='text-center text-gray-500 mb-6 md:mb-8 font-bold text-sm md:text-base'>
                     Sign up an account for LinkedUp
                 </p>
 

@@ -42,11 +42,11 @@ export default function ProfilePage() {
     const [showNewPassword, setShowNewPassword] = useState(false);
 
     return(
-        <div className='min-h-screen flex flex-col items-center bg-white'>
-            <main className='w-full max-w-sm rounded-2xl border bg-white p-5 mt-4 flex flex-col'>
+        <div className='min-h-screen flex flex-col items-center bg-white px-4 py-4'>
+            <main className='w-full max-w-sm md:max-w-md lg:max-w-lg rounded-2xl border bg-white p-4 md:p-6 mt-4 flex flex-col'>
                 <div className='relative flex items-center mb-6'>
                     <GoBackToMainPage/>
-                    <h1 className='text-2xl font-bold text-sky-500 mx-auto'>
+                    <h1 className='text-xl md:text-2xl font-bold text-sky-500 mx-auto'>
                         My Profile
                     </h1>
                 </div>
@@ -103,7 +103,7 @@ export default function ProfilePage() {
                 <GoBackToLoginPage/>
             </main>
 
-            <footer className='text-4x1 font-bold text-sky-500 text-center mt-3 mb-2'>
+            <footer className='text-sm md:text-base font-bold text-sky-500 text-center mt-3 mb-2'>
                 @LinkedUp
             </footer>
         </div>
