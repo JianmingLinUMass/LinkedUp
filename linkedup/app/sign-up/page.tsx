@@ -8,6 +8,7 @@ const links = [
 ];
 
 export default function SignupPage() {
+    const [username, setUsername] = useState('')
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -46,6 +47,19 @@ export default function SignupPage() {
                                placeholder='Enter your email'
                                value={email}
                                onChange={(e) => setEmail(e.target.value)}
+                               required
+                        />
+                    </div>
+
+                    <div>
+                        <label className='block text-black font-bold mb-1'>
+                            Username
+                        </label>
+                        <input type='email' 
+                               className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
+                               placeholder='Enter your username'
+                               value={username}
+                               onChange={(e) => setUsername(e.target.value)}
                                required
                         />
                     </div>
