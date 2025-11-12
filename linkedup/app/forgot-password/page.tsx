@@ -18,13 +18,13 @@ export default function ForgotPasswordPage() {
     }
 
     return(
-        <div className='min-h-screen flex items-center justify-center bg-white'>
+        <div className='min-h-screen flex flex-col items-center justify-center bg-white'>
             <div className='bg-white p-8 rounded-2x1 shadow-md w-full max-w-sm border'>
                 <h1 className='text-4xl font-bold text-sky-500 text-center mb-1'>
                     Password Reset
                 </h1>
                 <p className='text-center text-gray-500 mb-8 font-bold'>
-                    Reset your LinkedUp account password
+                    Reset LinkedUp password with email
                 </p>
 
                 <form onSubmit={handleSubmitForm} className='space-y-5'>
@@ -57,6 +57,10 @@ export default function ForgotPasswordPage() {
                     </p>
                 </div>
             </div>
+
+            <footer className='text-sm md:text-base font-bold text-sky-500 text-center mt-3 mb-2'>
+                @LinkedUp
+            </footer>
         </div>
     );
 }
