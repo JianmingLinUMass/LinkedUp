@@ -60,7 +60,7 @@ export default function ActivityCreationPage() {
                         <label className='block font-bold text-black mb-1'>
                             Date & Time
                         </label>
-                        <div className="flex gap-2">
+                        <div className='flex gap-2'>
                             <input {...register('time')} placeholder='' className='w-3/5 border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
                             <input {...register('date')} placeholder='' className='w-2/5 border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
                         </div>

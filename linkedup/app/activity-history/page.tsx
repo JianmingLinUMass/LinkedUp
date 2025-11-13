@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 type Activity = {title: string; time: string};
 
-const currentAndFutureList: Activity[] = [
+const initCurrentAndFutureList: Activity[] = [
     {title: 'Morning Jog',       time: '7:00AM, 11/07'},
     {title: 'Club Meetup',       time: '4:00PM, 11/07'},
     {title: 'Music Jam Session', time: '5:30PM, 11/07'},
@@ -13,7 +13,7 @@ const currentAndFutureList: Activity[] = [
     {title: 'Morning Jog',       time: '7:00AM, 11/08'},
 ]
 
-const pastList: Activity[] = [
+const initPastList: Activity[] = [
     {title: 'Morning Jog',       time: '7:00AM, 11/06'},
     {title: 'Morning Jog',       time: '7:00AM, 11/05'},
     {title: 'Morning Jog',       time: '7:00AM, 11/04'},
@@ -21,17 +21,53 @@ const pastList: Activity[] = [
     {title: 'Morning Jog',       time: '7:00AM, 11/02'},
 ]
 
-function ActivityBox({items}: {items: Activity[]}) {
+function ActivityBox({items, onRequestDelete}: {items: Activity[]; onRequestDelete?: (index: number) => void}) {
+    function DeleteActivityButton({onDelete}: {onDelete: () => void}) {
+        return (
+            <button onClick={onDelete} className='text-red-500 hover:text-red-700 font-bold text-2xl mr-1 w-8 h-8 rounded-full hover:bg-red-100'>
+                x
+            </button>
+        )
+    }
+
     return (
         <div className='rounded-md border divide-y'>
             {items.map((activity, index) => (
                 <div key={index} className='flex items-center justify-between px-3 py-3 text-sm md:text-base'>
-                    <span className='text-black'>{activity.title}</span>
-                    <span className='text-black'>{activity.time}</span>
+                    <div className='flex flex-col'>
+                        <span className='text-black'>{activity.title}</span>
+                        <span className='text-black'>{activity.time}</span>
+                    </div>
+                    {onRequestDelete && (
+                        <DeleteActivityButton onDelete={() => onRequestDelete(index)} />
+                    )}
                 </div>
             ))}
         </div>
     )
+}
+
+function ConfirmPanel({onCancel, onConfirm}: {onCancel: () => void; onConfirm: () => void}) {
+    return (
+        <div className='fixed inset-0 bg-black/30 flex items-center justify-center'>
+            <div className='bg-white p-5 rounded-xl border w-60 text-center'>
+                <h2 className='text-lg font-bold text-black'>
+                    Deletion Confirmation
+                    </h2>
+                <p className='mt-2 text-sm text-black'>
+                    This action cannot be undone.
+                    </p>
+                <div className='mt-4 flex justify-between'>
+                    <button onClick={onConfirm} className='ml-3 px-2 py-1 text-black font-semibold border rounded hover:bg-sky-500'>
+                        Delete
+                    </button>
+                    <button onClick={onCancel} className='mr-3 px-2 py-1 text-black font-semibold border rounded hover:bg-red-500'>
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 function GoBackToMainPage() {
@@ -46,8 +82,18 @@ function GoBackToMainPage() {
 }
 
 export default function ActivityHistoryPage() {
+    // setCurrentAndFutureList is not used as currentAndFutureList should not be modified with the delete activity buttons
+    const [currentAndFutureList, setCurrentAndFutureList] = useState(initCurrentAndFutureList);
+    const [pastList, setPastList] = useState(initPastList);
+
     const [currentAndFutureListOpen, setCurrentAndFutureListOpen] = useState(true);
     const [pastListOpen, setPastListOpen] = useState(true);
+
+    const [confirmPanelIndex, setConfirmPanelIndex] = useState<number | null>(null);
+
+    const deleteActivityFromPastList = (index: number) => {
+        setPastList((predicate) => predicate.filter((_, i) => i !== index));
+    };
 
     return(
         <div className='min-h-screen flex flex-col items-center bg-white'>
@@ -65,7 +111,7 @@ export default function ActivityHistoryPage() {
                     </button>
                     {currentAndFutureListOpen && (
                         <>
-                        <ActivityBox items={currentAndFutureList} />
+                        <ActivityBox items={currentAndFutureList}/>
                         </>
                     )}
                 </section>
@@ -76,8 +122,24 @@ export default function ActivityHistoryPage() {
                     </button>
                     {pastListOpen && (
                         <>
-                        <ActivityBox items={pastList} />
+                        <ActivityBox items={pastList} onRequestDelete={(index) => {
+                            setConfirmPanelIndex(index);
+                        }}/>
                         </>
+                    )}
+                </section>
+
+                <section>
+                    {confirmPanelIndex != null && (
+                        <ConfirmPanel
+                            onCancel={() => {
+                                setConfirmPanelIndex(null);
+                            }}
+                            onConfirm={() => {
+                                deleteActivityFromPastList(confirmPanelIndex);
+                                setConfirmPanelIndex(null);
+                            }}
+                        />
                     )}
                 </section>
             </main>
