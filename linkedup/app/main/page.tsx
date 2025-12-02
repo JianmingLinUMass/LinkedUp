@@ -4,32 +4,61 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import CalendarTimeline from '@/components/CalendarTimeline';
+import ActivityPanel from '@/components/ActivityPanel';
+import type { Activity, ActivityBox } from '@/schemas/ActivityRelated';
 
-type Activity = {title: string; time: string};
-
+// Mock data
 const myActivityLst: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/07'},
-    {title: 'Club Meetup',       time: '4:00PM, 11/08'},
-    {title: 'Music Jam Session', time: '5:30PM, 11/09'},
-    {title: 'Coding Night',      time: '8:00PM, 11/10'},
-]
+    {title: 'Morning Jog', time: '7:00AM, 11/07', 
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5},
 
+    {title: 'Club Meetup', time: '4:00PM, 11/08',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Music Jam Session', time: '5:30PM, 11/09',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Coding Night', time: '8:00PM, 11/10',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+]
+// Mock data
 const activityFeedsList: Activity[] = [
-    {title: 'Coffee Chat',       time: '5:30PM, 11/06'},
-    {title: 'Group Study',       time: '8:15PM, 11/06'},
-    {title: 'Morning Frisbee',   time: '7:30AM, 11/07'},
-    {title: 'Hiking Meetup',     time: '9:00AM, 11/07'},
+    {title: 'Coffee Chat', time: '5:30PM, 11/06',
+     location: 'Amherst', creator: {username: 'user4', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Group Study', time: '8:15PM, 11/06',
+     location: 'Amherst', creator: {username: 'user5', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Morning Frisbee', time: '7:30AM, 11/07',
+     location: 'Amherst', creator: {username: 'user6', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Hiking Meetup', time: '9:00AM, 11/07',
+     location: 'Amherst', creator: {username: 'user7', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
 ]
 
-function ActivityBox({items}: {items: Activity[]}) {
+function ActivityTable({items, onRowClick}: ActivityBox) {
     return (
-        <div className='rounded-md border divide-y'>
-            {items.map((activity, index) => (
-                <div key={index} className='flex items-center justify-between px-3 py-3 text-sm md:text-base'>
-                    <span className='text-black'>{activity.title}</span>
-                    <span className='text-black'>{activity.time}</span>
-                </div>
-            ))}
+        <div >
+            <div className='rounded-md border divide-y'>
+                {items.map(row => (
+                    <div key={row.title + row.time} 
+                        className='flex items-center justify-between px-3 py-3 text-sm md:text-base cursor-pointer'
+                        onClick={() => onRowClick?.(row)}>
+                        <span className='text-black'>{row.title}</span>
+                        <span className='text-black'>{row.time}</span>
+                    </div>
+                ))}
+            </div>
         </div>
     )
 }
@@ -72,6 +101,22 @@ export default function MainPage() {
     const [myListOpen, setMyListOpen] = useState(true);
     const [feedListOpen, setFeedListOpen] = useState(true);
     const [showCalendar, setShowCalendar] = useState(false);
+    const [rowSelected, setRowSelected] = useState<Activity | null>(null);
+    const [activityPanelOpened, setActivityPanelOpened] = useState(false);
+
+    const onRowClick = (row: Activity) => {
+        setRowSelected(row)
+        setActivityPanelOpened(true);
+    };
+
+    const onCancelButtonClick = () => {
+        setRowSelected(null)
+        setActivityPanelOpened(false);
+    };
+
+    const onJoinButtonClick = () => {
+        console.log('Joined activity: ', rowSelected);
+    }
 
     return(
         <div className='min-h-screen flex flex-col bg-white px-4 py-4 md:justify-center md:px-0'>
@@ -119,7 +164,7 @@ export default function MainPage() {
                         {showCalendar ? (
                             <CalendarTimeline activities={myActivityLst} />
                         ) : (
-                            myListOpen && <ActivityBox items={myActivityLst} />
+                            myListOpen && <ActivityTable items={myActivityLst} onRowClick={onRowClick}/>
                         )}
                         <GoToActivityHistoryPage/>
                     </section>
@@ -130,10 +175,16 @@ export default function MainPage() {
                         </button>
                         {feedListOpen && (
                             <>
-                            <ActivityBox items={activityFeedsList} />
+                            <ActivityTable items={activityFeedsList} onRowClick={onRowClick}/>
                             </>
                         )}
                         <GoToActivityCreationPage/>
+                    </section>
+
+                    <section className='mt-4'>
+                        {activityPanelOpened && rowSelected && (
+                            <ActivityPanel activity={rowSelected} onCancel={onCancelButtonClick} onJoin={onJoinButtonClick} />
+                        )}
                     </section>
                 </div>
             </main>

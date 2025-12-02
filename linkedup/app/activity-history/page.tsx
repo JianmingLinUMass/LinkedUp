@@ -2,23 +2,53 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import type { Activity } from '@/schemas/ActivityRelated';
 
-type Activity = {title: string; time: string};
-
+// Mock data
 const initCurrentAndFutureList: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/07'},
-    {title: 'Club Meetup',       time: '4:00PM, 11/07'},
-    {title: 'Music Jam Session', time: '5:30PM, 11/07'},
-    {title: 'Coding Night',      time: '8:00PM, 11/07'},
-    {title: 'Morning Jog',       time: '7:00AM, 11/08'},
+    {title: 'Morning Jog',       time: '7:00AM, 11/07',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Club Meetup',       time: '4:00PM, 11/07',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Music Jam Session', time: '5:30PM, 11/07',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Coding Night',      time: '8:00PM, 11/07',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Morning Jog',       time: '7:00AM, 11/08',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 0, maxAttendees: 5
+    },
 ]
-
+// Mock data
 const initPastList: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/06'},
-    {title: 'Morning Jog',       time: '7:00AM, 11/05'},
-    {title: 'Morning Jog',       time: '7:00AM, 11/04'},
-    {title: 'Morning Jog',       time: '7:00AM, 11/03'},
-    {title: 'Morning Jog',       time: '7:00AM, 11/02'},
+    {title: 'Morning Jog',       time: '7:00AM, 11/06',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 1, maxAttendees: 5
+    },
+    {title: 'Morning Jog',       time: '7:00AM, 11/05',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 2, maxAttendees: 5
+    },
+    {title: 'Morning Jog',       time: '7:00AM, 11/04',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 3, maxAttendees: 5
+    },
+    {title: 'Morning Jog',       time: '7:00AM, 11/03',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 4, maxAttendees: 5
+    },
+    {title: 'Morning Jog',       time: '7:00AM, 11/02',
+     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     attendees: 5, maxAttendees: 5
+    },
 ]
 
 function ActivityBox({items, onRequestDelete}: {items: Activity[]; onRequestDelete?: (index: number) => void}) {

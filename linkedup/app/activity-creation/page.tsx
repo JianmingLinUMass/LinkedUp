@@ -2,14 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-
-type ActivityFields = {
-    title: string;
-    location: string;
-    time: string;
-    date: string;
-    maxAttendees: number;
-}
+import type { ActivityCreationFields } from '@/schemas/ActivityRelated';
 
 function GoBackToMainPage() {
     const router = useRouter();
@@ -23,9 +16,9 @@ function GoBackToMainPage() {
 }
 
 export default function ActivityCreationPage() {
-    const { register, handleSubmit, reset } = useForm<ActivityFields>();
+    const { register, handleSubmit, reset } = useForm<ActivityCreationFields>();
 
-    const OnPostActivityFormSubmission = (data: ActivityFields) => {
+    const OnPostActivityFormSubmission = (data: ActivityCreationFields) => {
         console.log('Received user input:', data)
         reset();
     }
