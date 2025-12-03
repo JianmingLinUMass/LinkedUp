@@ -2,80 +2,56 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import ActivityPanel from '@/components/ActivityPanel';
 import type { Activity } from '@/schemas/ActivityRelated';
+import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
 
 // Mock data
 const initCurrentAndFutureList: Activity[] = [
     {title: 'Morning Jog',       time: '7:00AM, 11/07',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Club Meetup',       time: '4:00PM, 11/07',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Music Jam Session', time: '5:30PM, 11/07',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Coding Night',      time: '8:00PM, 11/07',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Morning Jog',       time: '7:00AM, 11/08',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
 ]
 // Mock data
 const initPastList: Activity[] = [
     {title: 'Morning Jog',       time: '7:00AM, 11/06',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 1, maxAttendees: 5
     },
     {title: 'Morning Jog',       time: '7:00AM, 11/05',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 2, maxAttendees: 5
     },
     {title: 'Morning Jog',       time: '7:00AM, 11/04',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 3, maxAttendees: 5
     },
     {title: 'Morning Jog',       time: '7:00AM, 11/03',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 4, maxAttendees: 5
     },
     {title: 'Morning Jog',       time: '7:00AM, 11/02',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 5, maxAttendees: 5
     },
 ]
-
-function ActivityBox({items, onRequestDelete}: {items: Activity[]; onRequestDelete?: (index: number) => void}) {
-    function DeleteActivityButton({onDelete}: {onDelete: () => void}) {
-        return (
-            <button onClick={onDelete} className='text-red-500 hover:text-red-700 font-bold text-2xl mr-1 w-8 h-8 rounded-full hover:bg-red-100'>
-                x
-            </button>
-        )
-    }
-
-    return (
-        <div className='rounded-md border divide-y'>
-            {items.map((activity, index) => (
-                <div key={index} className='flex items-center justify-between px-3 py-3 text-sm md:text-base'>
-                    <div className='flex flex-col'>
-                        <span className='text-black'>{activity.title}</span>
-                        <span className='text-black'>{activity.time}</span>
-                    </div>
-                    {onRequestDelete && (
-                        <DeleteActivityButton onDelete={() => onRequestDelete(index)} />
-                    )}
-                </div>
-            ))}
-        </div>
-    )
-}
 
 function ConfirmPanel({onCancel, onConfirm}: {onCancel: () => void; onConfirm: () => void}) {
     return (
@@ -88,10 +64,10 @@ function ConfirmPanel({onCancel, onConfirm}: {onCancel: () => void; onConfirm: (
                     This action cannot be undone.
                     </p>
                 <div className='mt-4 flex justify-between'>
-                    <button onClick={onConfirm} className='ml-3 px-2 py-1 text-black font-semibold border rounded hover:bg-sky-500'>
+                    <button onClick={onConfirm} className='ml-3 px-2 py-1 text-black font-semibold border rounded hover:bg-sky-300'>
                         Delete
                     </button>
-                    <button onClick={onCancel} className='mr-3 px-2 py-1 text-black font-semibold border rounded hover:bg-red-500'>
+                    <button onClick={onCancel} className='mr-3 px-2 py-1 text-black font-semibold border rounded hover:bg-gray-300'>
                         Cancel
                     </button>
                 </div>
@@ -115,14 +91,24 @@ export default function ActivityHistoryPage() {
     // setCurrentAndFutureList is not used as currentAndFutureList should not be modified with the delete activity buttons
     const [currentAndFutureList, setCurrentAndFutureList] = useState(initCurrentAndFutureList);
     const [pastList, setPastList] = useState(initPastList);
-
     const [currentAndFutureListOpen, setCurrentAndFutureListOpen] = useState(true);
     const [pastListOpen, setPastListOpen] = useState(true);
-
     const [confirmPanelIndex, setConfirmPanelIndex] = useState<number | null>(null);
+    const [rowSelected, setRowSelected] = useState<Activity | null>(null);
+    const [activityPanelOpened, setActivityPanelOpened] = useState(false);
+
+    const onRowClick = (row: Activity) => {
+        setRowSelected(row)
+        setActivityPanelOpened(true);
+    };
 
     const deleteActivityFromPastList = (index: number) => {
         setPastList((predicate) => predicate.filter((_, i) => i !== index));
+    };
+
+    const onCancelButtonClick = () => {
+        setRowSelected(null)
+        setActivityPanelOpened(false);
     };
 
     return(
@@ -140,9 +126,7 @@ export default function ActivityHistoryPage() {
                         <h2 className='text-lg font-bold text-black'>My Current & Future Activities</h2>
                     </button>
                     {currentAndFutureListOpen && (
-                        <>
-                        <ActivityBox items={currentAndFutureList}/>
-                        </>
+                        <ActivityTable items={currentAndFutureList} onRowClick={onRowClick}/>
                     )}
                 </section>
 
@@ -151,11 +135,9 @@ export default function ActivityHistoryPage() {
                         <h2 className='text-lg font-bold text-black'>My Past Activities</h2>
                     </button>
                     {pastListOpen && (
-                        <>
-                        <ActivityBox items={pastList} onRequestDelete={(index) => {
+                        <ActivityTableWithDeleteButton items={pastList} onRowClick={onRowClick} onRequestDelete={(index) => {
                             setConfirmPanelIndex(index);
                         }}/>
-                        </>
                     )}
                 </section>
 
@@ -170,6 +152,12 @@ export default function ActivityHistoryPage() {
                                 setConfirmPanelIndex(null);
                             }}
                         />
+                    )}
+                </section>
+
+                <section className='mt-4'>
+                    {activityPanelOpened && rowSelected && (
+                        <ActivityPanel activity={rowSelected} onCancel={onCancelButtonClick}/>
                     )}
                 </section>
             </main>

@@ -5,63 +5,47 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
-import type { Activity, ActivityBox } from '@/schemas/ActivityRelated';
+import type { Activity } from '@/schemas/ActivityRelated';
+import { ActivityTable } from '@/schemas/ActivityRelated';
 
 // Mock data
 const myActivityLst: Activity[] = [
     {title: 'Morning Jog', time: '7:00AM, 11/07', 
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5},
 
     {title: 'Club Meetup', time: '4:00PM, 11/08',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Music Jam Session', time: '5:30PM, 11/09',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Coding Night', time: '8:00PM, 11/10',
-     location: 'Amherst', creator: {username: 'user123', avatar: ''},
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
 ]
 // Mock data
 const activityFeedsList: Activity[] = [
     {title: 'Coffee Chat', time: '5:30PM, 11/06',
-     location: 'Amherst', creator: {username: 'user4', avatar: ''},
+     location: 'Amherst', creator: {username: 'user4', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Group Study', time: '8:15PM, 11/06',
-     location: 'Amherst', creator: {username: 'user5', avatar: ''},
+     location: 'Amherst', creator: {username: 'user5', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Morning Frisbee', time: '7:30AM, 11/07',
-     location: 'Amherst', creator: {username: 'user6', avatar: ''},
+     location: 'Amherst', creator: {username: 'user6', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
     {title: 'Hiking Meetup', time: '9:00AM, 11/07',
-     location: 'Amherst', creator: {username: 'user7', avatar: ''},
+     location: 'Amherst', creator: {username: 'user7', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
 ]
-
-function ActivityTable({items, onRowClick}: ActivityBox) {
-    return (
-        <div >
-            <div className='rounded-md border divide-y'>
-                {items.map(row => (
-                    <div key={row.title + row.time} 
-                        className='flex items-center justify-between px-3 py-3 text-sm md:text-base cursor-pointer'
-                        onClick={() => onRowClick?.(row)}>
-                        <span className='text-black'>{row.title}</span>
-                        <span className='text-black'>{row.time}</span>
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
 
 // Transits to another page without using the 'Link' attribute
 function GoToActivityCreationPage() {
@@ -69,7 +53,7 @@ function GoToActivityCreationPage() {
 
     return (
         <button onClick={() => router.push('/activity-creation')} 
-                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition'>
+                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition cursor-pointer'>
             Post an Activity
         </button>
     );
@@ -79,7 +63,7 @@ function GoToActivityHistoryPage() {
 
     return (
         <button onClick={() => router.push('/activity-history')} 
-                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition'>
+                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white ≈ transition cursor-pointer'>
             Activity History
         </button>
     );
@@ -114,6 +98,7 @@ export default function MainPage() {
         setActivityPanelOpened(false);
     };
 
+    // Backend logic needed for the "Join" button
     const onJoinButtonClick = () => {
         console.log('Joined activity: ', rowSelected);
     }
@@ -139,7 +124,7 @@ export default function MainPage() {
                                 localStorage.removeItem('isLoggedIn');
                                 window.location.href = '/';
                             }}
-                            className='text-sm text-gray-500 hover:text-gray-700 font-bold'
+                            className='text-sm text-gray-500 hover:text-gray-800 bg-red-300 font-bold border border-gray-300 rounded px-2 py-1 cursor-pointer'
                         >
                             Logout
                         </button>
@@ -154,8 +139,8 @@ export default function MainPage() {
                                 onClick={() => setShowCalendar(!showCalendar)}
                                 className={`px-3 py-1 rounded-md text-sm font-medium transition ${
                                     showCalendar 
-                                        ? 'bg-sky-400 text-white' 
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
+                                        : 'bg-sky-400 text-white' 
                                 }`}
                             >
                                 {showCalendar ? 'List' : 'Calendar'}
