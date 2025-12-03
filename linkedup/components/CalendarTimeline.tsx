@@ -1,11 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
-type Activity = {
-  title: string;
-  time: string;
-};
+import type { Activity } from '@/schemas/ActivityRelated';
 
 type CalendarTimelineProps = {
   activities: Activity[];

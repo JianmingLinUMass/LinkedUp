@@ -4,35 +4,48 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import CalendarTimeline from '@/components/CalendarTimeline';
+import ActivityPanel from '@/components/ActivityPanel';
+import type { Activity } from '@/schemas/ActivityRelated';
+import { ActivityTable } from '@/schemas/ActivityRelated';
 
-type Activity = {title: string; time: string};
-
+// Mock data
 const myActivityLst: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/07'},
-    {title: 'Club Meetup',       time: '4:00PM, 11/08'},
-    {title: 'Music Jam Session', time: '5:30PM, 11/09'},
-    {title: 'Coding Night',      time: '8:00PM, 11/10'},
-]
+    {title: 'Morning Jog', time: '7:00AM, 11/07', 
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5},
 
+    {title: 'Club Meetup', time: '4:00PM, 11/08',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Music Jam Session', time: '5:30PM, 11/09',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Coding Night', time: '8:00PM, 11/10',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5
+    },
+]
+// Mock data
 const activityFeedsList: Activity[] = [
-    {title: 'Coffee Chat',       time: '5:30PM, 11/06'},
-    {title: 'Group Study',       time: '8:15PM, 11/06'},
-    {title: 'Morning Frisbee',   time: '7:30AM, 11/07'},
-    {title: 'Hiking Meetup',     time: '9:00AM, 11/07'},
+    {title: 'Coffee Chat', time: '5:30PM, 11/06',
+     location: 'Amherst', creator: {username: 'user4', avatar: '/orange_tart.jpg'},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Group Study', time: '8:15PM, 11/06',
+     location: 'Amherst', creator: {username: 'user5', avatar: '/orange_tart.jpg'},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Morning Frisbee', time: '7:30AM, 11/07',
+     location: 'Amherst', creator: {username: 'user6', avatar: '/orange_tart.jpg'},
+     attendees: 0, maxAttendees: 5
+    },
+    {title: 'Hiking Meetup', time: '9:00AM, 11/07',
+     location: 'Amherst', creator: {username: 'user7', avatar: '/orange_tart.jpg'},
+     attendees: 0, maxAttendees: 5
+    },
 ]
-
-function ActivityBox({items}: {items: Activity[]}) {
-    return (
-        <div className='rounded-md border divide-y'>
-            {items.map((activity, index) => (
-                <div key={index} className='flex items-center justify-between px-3 py-3 text-sm md:text-base'>
-                    <span className='text-black'>{activity.title}</span>
-                    <span className='text-black'>{activity.time}</span>
-                </div>
-            ))}
-        </div>
-    )
-}
 
 // Transits to another page without using the 'Link' attribute
 function GoToActivityCreationPage() {
@@ -40,7 +53,7 @@ function GoToActivityCreationPage() {
 
     return (
         <button onClick={() => router.push('/activity-creation')} 
-                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition'>
+                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition cursor-pointer'>
             Post an Activity
         </button>
     );
@@ -50,7 +63,7 @@ function GoToActivityHistoryPage() {
 
     return (
         <button onClick={() => router.push('/activity-history')} 
-                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition'>
+                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white ≈ transition cursor-pointer'>
             Activity History
         </button>
     );
@@ -72,6 +85,24 @@ export default function MainPage() {
     const [myListOpen, setMyListOpen] = useState(true);
     const [feedListOpen, setFeedListOpen] = useState(true);
     const [showCalendar, setShowCalendar] = useState(false);
+    const [showCalendarFeedList, setShowCalendarFeedList] = useState(false);
+    const [rowSelected, setRowSelected] = useState<Activity | null>(null);
+    const [activityPanelOpened, setActivityPanelOpened] = useState(false);
+
+    const onRowClick = (row: Activity) => {
+        setRowSelected(row)
+        setActivityPanelOpened(true);
+    };
+
+    const onCancelButtonClick = () => {
+        setRowSelected(null)
+        setActivityPanelOpened(false);
+    };
+
+    // Backend logic needed for the "Join" button
+    const onJoinButtonClick = () => {
+        console.log('Joined activity: ', rowSelected);
+    }
 
     return(
         <div className='min-h-screen flex flex-col bg-white px-4 py-4 md:justify-center md:px-0'>
@@ -94,7 +125,7 @@ export default function MainPage() {
                                 localStorage.removeItem('isLoggedIn');
                                 window.location.href = '/';
                             }}
-                            className='text-sm text-gray-500 hover:text-gray-700 font-bold'
+                            className='text-sm text-gray-500 hover:text-gray-800 bg-red-300 font-bold border border-gray-300 rounded px-2 py-1 cursor-pointer'
                         >
                             Logout
                         </button>
@@ -109,8 +140,8 @@ export default function MainPage() {
                                 onClick={() => setShowCalendar(!showCalendar)}
                                 className={`px-3 py-1 rounded-md text-sm font-medium transition ${
                                     showCalendar 
-                                        ? 'bg-sky-400 text-white' 
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
+                                        : 'bg-sky-400 text-white' 
                                 }`}
                             >
                                 {showCalendar ? 'List' : 'Calendar'}
@@ -119,21 +150,39 @@ export default function MainPage() {
                         {showCalendar ? (
                             <CalendarTimeline activities={myActivityLst} />
                         ) : (
-                            myListOpen && <ActivityBox items={myActivityLst} />
+                            myListOpen && <ActivityTable items={myActivityLst} onRowClick={onRowClick}/>
                         )}
                         <GoToActivityHistoryPage/>
                     </section>
 
                     <section className='mt-4'>
-                        <button onClick={() => setFeedListOpen(!feedListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
-                            <h2 className='text-lg font-bold text-black'>Activity Feeds</h2>
-                        </button>
-                        {feedListOpen && (
-                            <>
-                            <ActivityBox items={activityFeedsList} />
-                            </>
+                        <div className='flex items-center justify-between py-2'>
+                            <button onClick={() => setFeedListOpen(!feedListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
+                                <h2 className='text-lg font-bold text-black'>Activity Feeds</h2>
+                            </button>
+                            <button 
+                                onClick={() => setShowCalendarFeedList(!showCalendarFeedList)}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+                                    showCalendarFeedList 
+                                        ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
+                                        : 'bg-sky-400 text-white' 
+                                }`}
+                                >
+                                    {showCalendarFeedList ? 'List' : 'Calendar'}
+                            </button>
+                        </div>
+                        {showCalendarFeedList ? (
+                            <CalendarTimeline activities={activityFeedsList} />
+                        ) : (
+                            feedListOpen && <ActivityTable items={activityFeedsList} onRowClick={onRowClick}/>
                         )}
                         <GoToActivityCreationPage/>
+                    </section>
+
+                    <section className='mt-4'>
+                        {activityPanelOpened && rowSelected && (
+                            <ActivityPanel activity={rowSelected} onCancel={onCancelButtonClick} onJoin={onJoinButtonClick} />
+                        )}
                     </section>
                 </div>
             </main>
