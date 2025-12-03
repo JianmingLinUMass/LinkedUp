@@ -85,6 +85,7 @@ export default function MainPage() {
     const [myListOpen, setMyListOpen] = useState(true);
     const [feedListOpen, setFeedListOpen] = useState(true);
     const [showCalendar, setShowCalendar] = useState(false);
+    const [showCalendarFeedList, setShowCalendarFeedList] = useState(false);
     const [rowSelected, setRowSelected] = useState<Activity | null>(null);
     const [activityPanelOpened, setActivityPanelOpened] = useState(false);
 
@@ -155,13 +156,25 @@ export default function MainPage() {
                     </section>
 
                     <section className='mt-4'>
-                        <button onClick={() => setFeedListOpen(!feedListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
-                            <h2 className='text-lg font-bold text-black'>Activity Feeds</h2>
-                        </button>
-                        {feedListOpen && (
-                            <>
-                            <ActivityTable items={activityFeedsList} onRowClick={onRowClick}/>
-                            </>
+                        <div className='flex items-center justify-between py-2'>
+                            <button onClick={() => setFeedListOpen(!feedListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
+                                <h2 className='text-lg font-bold text-black'>Activity Feeds</h2>
+                            </button>
+                            <button 
+                                onClick={() => setShowCalendarFeedList(!showCalendarFeedList)}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+                                    showCalendarFeedList 
+                                        ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
+                                        : 'bg-sky-400 text-white' 
+                                }`}
+                                >
+                                    {showCalendarFeedList ? 'List' : 'Calendar'}
+                            </button>
+                        </div>
+                        {showCalendarFeedList ? (
+                            <CalendarTimeline activities={activityFeedsList} />
+                        ) : (
+                            feedListOpen && <ActivityTable items={activityFeedsList} onRowClick={onRowClick}/>
                         )}
                         <GoToActivityCreationPage/>
                     </section>
