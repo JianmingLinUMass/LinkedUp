@@ -8,10 +8,9 @@ type CalendarTimelineProps = {
 };
 
 function parseActivityTime(timeStr: string) {
-  // Parse "7:00AM, 11/07" format
+  // Parse "7:00AM, 11/07/2025" format
   const [time, date] = timeStr.split(', ');
-  const [month, day] = date.split('/');
-  const currentYear = new Date().getFullYear();
+  const [month, day, year] = date.split('/');
   
   // Parse time
   const timeMatch = time.match(/(\d+):(\d+)(AM|PM)/);
@@ -24,7 +23,7 @@ function parseActivityTime(timeStr: string) {
   if (period === 'PM' && hours !== 12) hours += 12;
   if (period === 'AM' && hours === 12) hours = 0;
   
-  return new Date(currentYear, parseInt(month) - 1, parseInt(day), hours, minutes);
+  return new Date(parseInt(year), parseInt(month) - 1, parseInt(day), hours, minutes);
 }
 
 function formatTime(date: Date) {
@@ -109,7 +108,8 @@ export default function CalendarTimeline({ activities }: CalendarTimelineProps) 
             {selectedDate.toLocaleDateString('en-US', { 
               weekday: 'long', 
               month: 'long', 
-              day: 'numeric' 
+              day: 'numeric',
+              year: 'numeric'
             })}
           </h4>
           

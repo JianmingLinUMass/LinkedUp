@@ -8,46 +8,46 @@ import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/Activity
 
 // Mock data
 const initCurrentAndFutureList: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/07',
+    {title: 'Morning Jog',       time: '7:00AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Club Meetup',       time: '4:00PM, 11/07',
+    {title: 'Club Meetup',       time: '4:00PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Music Jam Session', time: '5:30PM, 11/07',
+    {title: 'Music Jam Session', time: '5:30PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Coding Night',      time: '8:00PM, 11/07',
+    {title: 'Coding Night',      time: '8:00PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/08',
+    {title: 'Morning Jog',       time: '7:00AM, 11/08/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
 ]
 // Mock data
 const initPastList: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/06',
+    {title: 'Morning Jog',       time: '7:00AM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 1, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/05',
+    {title: 'Morning Jog',       time: '7:00AM, 11/05/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 2, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/04',
+    {title: 'Morning Jog',       time: '7:00AM, 11/04/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 3, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/03',
+    {title: 'Morning Jog',       time: '7:00AM, 11/03/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 4, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/02',
+    {title: 'Morning Jog',       time: '7:00AM, 11/02/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 5, maxAttendees: 5
     },
