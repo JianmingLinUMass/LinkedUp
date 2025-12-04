@@ -10,38 +10,38 @@ import { ActivityTable } from '@/schemas/ActivityRelated';
 
 // Mock data
 const myActivityLst: Activity[] = [
-    {title: 'Morning Jog', time: '7:00AM, 11/07', 
+    {title: 'Morning Jog', time: '7:00AM, 11/07/2025', 
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5},
 
-    {title: 'Club Meetup', time: '4:00PM, 11/08',
+    {title: 'Club Meetup', time: '4:00PM, 11/08/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Music Jam Session', time: '5:30PM, 11/09',
+    {title: 'Music Jam Session', time: '5:30PM, 11/09/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Coding Night', time: '8:00PM, 11/10',
+    {title: 'Coding Night', time: '8:00PM, 11/10/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
 ]
 // Mock data
 const activityFeedsList: Activity[] = [
-    {title: 'Coffee Chat', time: '5:30PM, 11/06',
+    {title: 'Coffee Chat', time: '5:30PM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user4', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Group Study', time: '8:15PM, 11/06',
+    {title: 'Group Study', time: '8:15PM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user5', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Morning Frisbee', time: '7:30AM, 11/07',
+    {title: 'Morning Frisbee', time: '7:30AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user6', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Hiking Meetup', time: '9:00AM, 11/07',
+    {title: 'Hiking Meetup', time: '9:00AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user7', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
