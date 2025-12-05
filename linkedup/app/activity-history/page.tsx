@@ -113,8 +113,9 @@ export default function ActivityHistoryPage() {
     };
 
     return(
-        <div className='min-h-screen flex flex-col items-center bg-white'>
-            <main className='w-full max-w-sm rounded-2xl border bg-white p-5 mt-4 flex flex-col'>
+        <div className='min-h-screen flex flex-col bg-white px-4 py-4'>
+            <main className='flex-grow flex justify-center'>
+                <div className='w-full max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-6xl rounded-2xl border bg-white p-4 md:p-8 shadow-sm min-h-[600px] md:min-h-[700px]'>
                     <div className='relative flex gap-5 items-center'>
                         <GoBackToMainPage/>
                         <h1 className='text-2xl font-bold text-sky-500 mx-auto'>
@@ -122,43 +123,44 @@ export default function ActivityHistoryPage() {
                         </h1>
                     </div>
 
-                <section className='mt-4'>
-                    <button onClick={() => setCurrentAndFutureListOpen(!currentAndFutureListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
-                        <h2 className='text-lg font-bold text-black'>My Current & Future Activities</h2>
-                    </button>
-                    {currentAndFutureListOpen && (
-                        <ActivityTable items={currentAndFutureList} onRowClick={onRowClick}/>
-                    )}
-                </section>
+                    <section className='mt-4'>
+                        <button onClick={() => setCurrentAndFutureListOpen(!currentAndFutureListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
+                            <h2 className='text-lg font-bold text-black'>My Current & Future Activities</h2>
+                        </button>
+                        {currentAndFutureListOpen && (
+                            <ActivityTable items={currentAndFutureList} onRowClick={onRowClick}/>
+                        )}
+                    </section>
 
-                <section className='mt-4'>
-                    <button onClick={() => setPastListOpen(!pastListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
-                        <h2 className='text-lg font-bold text-black'>My Past Activities</h2>
-                    </button>
-                    {pastListOpen && (
-                        <ActivityTableWithDeleteButton items={pastList} onRowClick={onRowClick} onRequestDelete={(id) => {
-                            setConfirmPanelId(id);
-                        }}/>
-                    )}
-                </section>
+                    <section className='mt-4'>
+                        <button onClick={() => setPastListOpen(!pastListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
+                            <h2 className='text-lg font-bold text-black'>My Past Activities</h2>
+                        </button>
+                        {pastListOpen && (
+                            <ActivityTableWithDeleteButton items={pastList} onRowClick={onRowClick} onRequestDelete={(id) => {
+                                setConfirmPanelId(id);
+                            }}/>
+                        )}
+                    </section>
 
-                <section>
-                    {confirmPanelId != null && (
-                        <ConfirmPanel
-                            onCancel={() => setConfirmPanelId(null)}
-                            onConfirm={() => {
-                                deleteActivityFromPastList(confirmPanelId);
-                                setConfirmPanelId(null);
-                            }}
-                        />
-                    )}
-                </section>
+                    <section>
+                        {confirmPanelId != null && (
+                            <ConfirmPanel
+                                onCancel={() => setConfirmPanelId(null)}
+                                onConfirm={() => {
+                                    deleteActivityFromPastList(confirmPanelId);
+                                    setConfirmPanelId(null);
+                                }}
+                            />
+                        )}
+                    </section>
 
-                <section className='mt-4'>
-                    {activityPanelOpened && rowSelected && (
-                        <ActivityPanel activity={rowSelected} onCancel={onCancelButtonClick}/>
-                    )}
-                </section>
+                    <section className='mt-4'>
+                        {activityPanelOpened && rowSelected && (
+                            <ActivityPanel activity={rowSelected} onCancel={onCancelButtonClick}/>
+                        )}
+                    </section>
+                </div>
             </main>
 
             <footer className='text-4x1 font-bold text-sky-500 text-center mt-3 mb-2'>

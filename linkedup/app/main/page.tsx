@@ -106,8 +106,8 @@ export default function MainPage() {
     }
 
     return(
-        <div className='min-h-screen flex flex-col bg-white px-4 py-4 md:justify-center md:px-0'>
-            <main className='flex-grow flex items-center justify-center'>
+        <div className='min-h-screen flex flex-col bg-white px-4 py-4'>
+            <main className='flex-grow flex justify-center'>
                 <div className='w-full max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-6xl rounded-2xl border bg-white p-4 md:p-8 shadow-sm min-h-[600px] md:min-h-[700px]'>
                     <header className='flex gap-5 items-center justify-between pb-4 border-b text-gray-300'>
                         <div className='flex gap-5 items-center'>
