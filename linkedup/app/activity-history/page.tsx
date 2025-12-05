@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
 import type { Activity } from '@/schemas/ActivityRelated';
 import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
@@ -92,8 +93,13 @@ export default function ActivityHistoryPage() {
     // setCurrentAndFutureList is not used as currentAndFutureList should not be modified with the delete activity buttons
     const [currentAndFutureList, setCurrentAndFutureList] = useState(initCurrentAndFutureList);
     const [pastList, setPastList] = useState(initPastList);
+
     const [currentAndFutureListOpen, setCurrentAndFutureListOpen] = useState(true);
     const [pastListOpen, setPastListOpen] = useState(true);
+
+    const [showCalendarCurrentAndFutureList, setShowCalendarCurrentAndFutureList] = useState(false);
+    const [showCalendarPastList, setShowCalendarPastList] = useState(false);
+
     const [confirmPanelId, setConfirmPanelId] = useState<string | null>(null);
     const [rowSelected, setRowSelected] = useState<Activity | null>(null);
     const [activityPanelOpened, setActivityPanelOpened] = useState(false);
@@ -124,22 +130,61 @@ export default function ActivityHistoryPage() {
                     </div>
 
                     <section className='mt-4'>
-                        <button onClick={() => setCurrentAndFutureListOpen(!currentAndFutureListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
-                            <h2 className='text-lg font-bold text-black'>My Current & Future Activities</h2>
-                        </button>
-                        {currentAndFutureListOpen && (
-                            <ActivityTable items={currentAndFutureList} onRowClick={onRowClick}/>
+                        <div className='flex items-center justify-between py-2'>
+                            <button onClick={() => setCurrentAndFutureListOpen(!currentAndFutureListOpen)} className='text-left cursor-pointer'>
+                                <h2 className='text-lg font-bold text-black'>My Current & Future Activities</h2>
+                            </button>
+                            <button 
+                                onClick={() => setShowCalendarCurrentAndFutureList(!showCalendarCurrentAndFutureList)}
+                                className={`w-20 px-3 py-1 rounded-md text-sm font-medium transition cursor-pointer ${
+                                    showCalendarCurrentAndFutureList 
+                                        ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
+                                        : 'bg-sky-400 text-white' 
+                                }`}
+                            >
+                                {showCalendarCurrentAndFutureList ? 'List' : 'Calendar'}
+                            </button>
+                        </div>
+
+                        {showCalendarCurrentAndFutureList ? (
+                            <CalendarTimeline activities={currentAndFutureList} />
+                        ) : (
+                            currentAndFutureListOpen && (
+                                <div className={'rounded-md border'}>
+                                    <ActivityTable items={currentAndFutureList} onRowClick={onRowClick}/>
+                                </div>
+                            )
                         )}
                     </section>
 
                     <section className='mt-4'>
-                        <button onClick={() => setPastListOpen(!pastListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
-                            <h2 className='text-lg font-bold text-black'>My Past Activities</h2>
-                        </button>
-                        {pastListOpen && (
-                            <ActivityTableWithDeleteButton items={pastList} onRowClick={onRowClick} onRequestDelete={(id) => {
+                        <div className='flex items-center justify-between py-2'>
+                            <button onClick={() => setPastListOpen(!pastListOpen)} className='text-left cursor-pointer'>
+                                <h2 className='text-lg font-bold text-black'>My Past Activities</h2>
+                            </button>
+                            <button 
+                                onClick={() => setShowCalendarPastList(!showCalendarPastList)}
+                                className={`w-20 px-3 py-1 rounded-md text-sm font-medium transition cursor-pointer ${
+                                    showCalendarPastList 
+                                        ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
+                                        : 'bg-sky-400 text-white' 
+                                }`}
+                            >
+                                {showCalendarPastList ? 'List' : 'Calendar'}
+                            </button>
+                        </div>
+
+
+                        {showCalendarPastList ? (
+                            <CalendarTimeline activities={pastList} />
+                        ) : (
+                            pastListOpen && (
+                                <div className={'rounded-md border'}>
+                                    <ActivityTableWithDeleteButton items={pastList} onRowClick={onRowClick} onRequestDelete={(id) => {
                                 setConfirmPanelId(id);
                             }}/>
+                                </div>
+                            )
                         )}
                     </section>
 

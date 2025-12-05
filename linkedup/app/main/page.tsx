@@ -85,8 +85,10 @@ export default function MainPage() {
 
     const [myListOpen, setMyListOpen] = useState(true);
     const [feedListOpen, setFeedListOpen] = useState(true);
-    const [showCalendar, setShowCalendar] = useState(false);
+
+    const [showCalendarMyList, setShowCalendarMyList] = useState(false);
     const [showCalendarFeedList, setShowCalendarFeedList] = useState(false);
+
     const [rowSelected, setRowSelected] = useState<Activity | null>(null);
     const [activityPanelOpened, setActivityPanelOpened] = useState(false);
 
@@ -138,17 +140,17 @@ export default function MainPage() {
                                 <h2 className='text-lg font-bold text-black'>My Activities</h2>
                             </button>
                             <button 
-                                onClick={() => setShowCalendar(!showCalendar)}
+                                onClick={() => setShowCalendarMyList(!showCalendarMyList)}
                                 className={`w-20 px-3 py-1 rounded-md text-sm font-medium transition cursor-pointer ${
-                                    showCalendar 
+                                    showCalendarMyList 
                                         ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
                                         : 'bg-sky-400 text-white' 
                                 }`}
                             >
-                                {showCalendar ? 'List' : 'Calendar'}
+                                {showCalendarMyList ? 'List' : 'Calendar'}
                             </button>
                         </div>
-                        {showCalendar ? (
+                        {showCalendarMyList ? (
                             <CalendarTimeline activities={myActivityLst} />
                         ) : (
                             myListOpen && (
