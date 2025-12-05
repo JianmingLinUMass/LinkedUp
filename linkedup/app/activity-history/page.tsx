@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
+import GoToTopButton from '@/components/GoToTopButton'
 import type { Activity } from '@/schemas/ActivityRelated';
 import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
 
@@ -41,6 +42,19 @@ const initPastList: Activity[] = [
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 2, maxAttendees: 5
     },
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/04/2024',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 3, maxAttendees: 5
+    },
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/03/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 4, maxAttendees: 5
+    },
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/02/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 5, maxAttendees: 5
+    },
+    // duplicated data below is used for testing the 'GoToTopButton'
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/04/2024',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 3, maxAttendees: 5
@@ -207,6 +221,8 @@ export default function ActivityHistoryPage() {
                     </section>
                 </div>
             </main>
+
+            <GoToTopButton />
 
             <footer className='text-4x1 font-bold text-sky-500 text-center mt-3 mb-2'>
                 @LinkedUp

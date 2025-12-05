@@ -6,11 +6,29 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
+import GoToTopButton from '@/components/GoToTopButton';
 import type { Activity } from '@/schemas/ActivityRelated';
 import { ActivityTable } from '@/schemas/ActivityRelated';
 
 // Mock data
 const myActivityLst: Activity[] = [
+    {id: uuidv4(), title: 'Morning Jog', time: '7:00AM, 11/07/2025', 
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5},
+
+    {id: uuidv4(), title: 'Club Meetup', time: '4:00PM, 11/08/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5
+    },
+    {id: uuidv4(), title: 'Music Jam Session', time: '5:30PM, 11/09/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5
+    },
+    {id: uuidv4(), title: 'Coding Night', time: '8:00PM, 11/10/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     attendees: 0, maxAttendees: 5
+    },
+    // duplicated data below is used for testing the 'GoToTopButton'
     {id: uuidv4(), title: 'Morning Jog', time: '7:00AM, 11/07/2025', 
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5},
@@ -193,6 +211,8 @@ export default function MainPage() {
                     </section>
                 </div>
             </main>
+
+            <GoToTopButton />
 
             <footer className='text-4x1 font-bold text-sky-500 text-center mb-2'>
                 @LinkedUp
