@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
 import type { Activity } from '@/schemas/ActivityRelated';
@@ -10,38 +11,38 @@ import { ActivityTable } from '@/schemas/ActivityRelated';
 
 // Mock data
 const myActivityLst: Activity[] = [
-    {title: 'Morning Jog', time: '7:00AM, 11/07/2025', 
+    {id: uuidv4(), title: 'Morning Jog', time: '7:00AM, 11/07/2025', 
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5},
 
-    {title: 'Club Meetup', time: '4:00PM, 11/08/2025',
+    {id: uuidv4(), title: 'Club Meetup', time: '4:00PM, 11/08/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Music Jam Session', time: '5:30PM, 11/09/2025',
+    {id: uuidv4(), title: 'Music Jam Session', time: '5:30PM, 11/09/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Coding Night', time: '8:00PM, 11/10/2025',
+    {id: uuidv4(), title: 'Coding Night', time: '8:00PM, 11/10/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
 ]
 // Mock data
 const activityFeedsList: Activity[] = [
-    {title: 'Coffee Chat', time: '5:30PM, 11/06/2025',
+    {id: uuidv4(), title: 'Coffee Chat', time: '5:30PM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user4', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Group Study', time: '8:15PM, 11/06/2025',
+    {id: uuidv4(), title: 'Group Study', time: '8:15PM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user5', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Morning Frisbee', time: '7:30AM, 11/07/2025',
+    {id: uuidv4(), title: 'Morning Frisbee', time: '7:30AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user6', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Hiking Meetup', time: '9:00AM, 11/07/2025',
+    {id: uuidv4(), title: 'Hiking Meetup', time: '9:00AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user7', avatar: '/orange_tart.jpg'},
      attendees: 0, maxAttendees: 5
     },
@@ -84,8 +85,10 @@ export default function MainPage() {
 
     const [myListOpen, setMyListOpen] = useState(true);
     const [feedListOpen, setFeedListOpen] = useState(true);
-    const [showCalendar, setShowCalendar] = useState(false);
+
+    const [showCalendarMyList, setShowCalendarMyList] = useState(false);
     const [showCalendarFeedList, setShowCalendarFeedList] = useState(false);
+
     const [rowSelected, setRowSelected] = useState<Activity | null>(null);
     const [activityPanelOpened, setActivityPanelOpened] = useState(false);
 
@@ -99,14 +102,14 @@ export default function MainPage() {
         setActivityPanelOpened(false);
     };
 
-    // Backend logic needed for the "Join" button
+    // Backend logic needed for the 'Join' button
     const onJoinButtonClick = () => {
         console.log('Joined activity: ', rowSelected);
     }
 
     return(
-        <div className='min-h-screen flex flex-col bg-white px-4 py-4 md:justify-center md:px-0'>
-            <main className='flex-grow flex items-center justify-center'>
+        <div className='min-h-screen flex flex-col bg-white px-4 py-4'>
+            <main className='flex-grow flex justify-center'>
                 <div className='w-full max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-6xl rounded-2xl border bg-white p-4 md:p-8 shadow-sm min-h-[600px] md:min-h-[700px]'>
                     <header className='flex gap-5 items-center justify-between pb-4 border-b text-gray-300'>
                         <div className='flex gap-5 items-center'>
@@ -137,32 +140,36 @@ export default function MainPage() {
                                 <h2 className='text-lg font-bold text-black'>My Activities</h2>
                             </button>
                             <button 
-                                onClick={() => setShowCalendar(!showCalendar)}
-                                className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-                                    showCalendar 
+                                onClick={() => setShowCalendarMyList(!showCalendarMyList)}
+                                className={`w-20 px-3 py-1 rounded-md text-sm font-medium transition cursor-pointer ${
+                                    showCalendarMyList 
                                         ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
                                         : 'bg-sky-400 text-white' 
                                 }`}
                             >
-                                {showCalendar ? 'List' : 'Calendar'}
+                                {showCalendarMyList ? 'List' : 'Calendar'}
                             </button>
                         </div>
-                        {showCalendar ? (
+                        {showCalendarMyList ? (
                             <CalendarTimeline activities={myActivityLst} />
                         ) : (
-                            myListOpen && <ActivityTable items={myActivityLst} onRowClick={onRowClick}/>
+                            myListOpen && (
+                                <div className={'rounded-md border'}>
+                                    <ActivityTable items={myActivityLst} onRowClick={onRowClick}/>
+                                </div>
+                            )
                         )}
                         <GoToActivityHistoryPage/>
                     </section>
 
                     <section className='mt-4'>
                         <div className='flex items-center justify-between py-2'>
-                            <button onClick={() => setFeedListOpen(!feedListOpen)} className='w-full flex items-center justify-between py-2 text-left cursor-pointer'>
+                            <button onClick={() => setFeedListOpen(!feedListOpen)} className='text-left cursor-pointer'>
                                 <h2 className='text-lg font-bold text-black'>Activity Feeds</h2>
                             </button>
                             <button 
                                 onClick={() => setShowCalendarFeedList(!showCalendarFeedList)}
-                                className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+                                className={`w-20 px-3 py-1 rounded-md text-sm font-medium transition cursor-pointer ${
                                     showCalendarFeedList 
                                         ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
                                         : 'bg-sky-400 text-white' 
