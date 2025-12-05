@@ -14,8 +14,7 @@ export type Activity = {
 export type ActivityCreationFields = {
     title: string;
     location: string;
-    time: string;
-    date: string;
+    timeAndDate: string;
     maxAttendees: number;
 }
 
@@ -103,8 +102,8 @@ export function parseActivityTime(timeStr: string) {
   const minutes = parseInt(timeMatch[2]);
   const period = timeMatch[3];
   
-  if (period === 'PM' && hours !== 12) hours += 12;
-  if (period === 'AM' && hours === 12) hours = 0;
+  if (period.toUpperCase() === 'PM' && hours !== 12) hours += 12;
+  if (period.toUpperCase() === 'AM' && hours === 12) hours = 0;
   
   return new Date(parseInt(year), parseInt(month) - 1, parseInt(day), hours, minutes);
 }

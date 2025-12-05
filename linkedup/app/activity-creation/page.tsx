@@ -16,12 +16,38 @@ function GoBackToMainPage() {
 }
 
 export default function ActivityCreationPage() {
-    const { register, handleSubmit, reset } = useForm<ActivityCreationFields>();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<ActivityCreationFields>({
+        mode: 'onSubmit',
+        reValidateMode: 'onSubmit'
+    });
 
+    // Receives user input here, in data
     const OnPostActivityFormSubmission = (data: ActivityCreationFields) => {
         console.log('Received user input:', data)
         reset();
     }
+
+    // return true if timeAndDateValue is a future time 
+    const validateTimeAndDate = (timeAndDateValue: string) => {
+        const match = timeAndDateValue.match(/^(\d{1,2}):(\d{2})(AM|PM), (\d{2})\/(\d{2})\/(\d{4})$/i);
+        if (!match) return true;
+
+        let hours = parseInt(match[1]);
+        const minutes = parseInt(match[2]);
+        const period = match[3];
+        const month = parseInt(match[4]) - 1;
+        const day = parseInt(match[5]);
+        const year = parseInt(match[6]);
+        
+        if (period.toUpperCase() === 'PM' && hours !== 12) hours += 12;
+        if (period.toUpperCase() === 'AM' && hours === 12) hours = 0;
+        
+        const inputDate = new Date(year, month, day, hours, minutes)
+        if (inputDate < new Date()) {
+            return 'Invalid input: cannot input a past time.';
+        }
+        return true;
+    };
 
     return(
         <div className='min-h-screen flex flex-col justify-center items-center bg-white px-4 py-4'>
@@ -39,31 +65,67 @@ export default function ActivityCreationPage() {
                         <label className='block font-bold text-black mb-1'>
                             Activity Title
                         </label>
-                        <input {...register('title')} placeholder='' className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
+                        <input {...register('title', {required: 'Title is required for posting an activity.'})} 
+                               placeholder='' className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
+                        {errors.title && 
+                            <span className='text-sm text-red-400'>
+                                {errors.title.message}
+                            </span>
+                        }
                     </div>
 
                     <div>
                         <label className='block font-bold text-black mb-1'>
                             Location
                         </label>
-                        <input {...register('location')} placeholder='' className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
+                        <input {...register('location', {required: 'Location is required for posting an activity.'})}
+                               placeholder='' className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
+                        {errors.location && 
+                            <span className='text-sm text-red-400'>
+                                {errors.location.message}
+                            </span>
+                        }
                     </div>
 
                     <div>
                         <label className='block font-bold text-black mb-1'>
                             Date & Time
                         </label>
-                        <div className='flex gap-2'>
-                            <input {...register('time')} placeholder='' className='w-3/5 border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
-                            <input {...register('date')} placeholder='' className='w-2/5 border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
+                        <div className='flex flex-col'>
+                            <input {...register('timeAndDate', {
+                                required: 'Time and Date is required for posting an activity.',
+                                pattern: {
+                                    value: /^[0-9]{1,2}:[0-9]{2}(AM|PM), [0-9]{2}\/[0-9]{2}\/[0-9]{4}$/i,
+                                    message: 'Invalid format.'
+                                },
+                                validate: (value: string) => {
+                                    return validateTimeAndDate(value);
+                                }
+                            })} placeholder='' className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
                         </div>
+                        <span className='block text-sm text-gray-600'>
+                            Please enter the time and date in this format: 00:00AM, MM/DD/YYYY
+                        </span>
+                        {errors.timeAndDate && 
+                            <span className='block text-sm text-red-400'>
+                                {errors.timeAndDate.message}
+                            </span>
+                        }
                     </div>
 
                     <div>
                         <label className='block font-bold text-black mb-1'>
                             Max Attendees
                         </label>
-                        <input {...register('maxAttendees')} placeholder='' className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
+                        <input type='number' {...register('maxAttendees', {
+                            required: 'Max attendees is required for posting an activity.',
+                            min: {value: 1, message: 'Must be at least 1 attendee.'}
+                        })} placeholder='' className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'/>
+                        {errors.maxAttendees && 
+                            <span className='text-sm text-red-400'>
+                                {errors.maxAttendees.message}
+                            </span>
+                        }
                     </div>   
 
                     <div>

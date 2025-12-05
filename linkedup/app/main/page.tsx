@@ -102,7 +102,7 @@ export default function MainPage() {
         setActivityPanelOpened(false);
     };
 
-    // Backend logic needed for the "Join" button
+    // Backend logic needed for the 'Join' button
     const onJoinButtonClick = () => {
         console.log('Joined activity: ', rowSelected);
     }
