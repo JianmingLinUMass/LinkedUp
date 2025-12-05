@@ -2,52 +2,53 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import ActivityPanel from '@/components/ActivityPanel';
 import type { Activity } from '@/schemas/ActivityRelated';
 import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
 
 // Mock data
 const initCurrentAndFutureList: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/07/2025',
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Club Meetup',       time: '4:00PM, 11/07/2025',
+    {id: uuidv4(), title: 'Club Meetup',       time: '4:00PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Music Jam Session', time: '5:30PM, 11/07/2025',
+    {id: uuidv4(), title: 'Music Jam Session', time: '5:30PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Coding Night',      time: '8:00PM, 11/07/2025',
+    {id: uuidv4(), title: 'Coding Night',      time: '8:00PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/08/2025',
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/08/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 0, maxAttendees: 5
     },
 ]
 // Mock data
 const initPastList: Activity[] = [
-    {title: 'Morning Jog',       time: '7:00AM, 11/06/2025',
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 1, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/05/2025',
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/05/2023',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 2, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/04/2025',
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/04/2024',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 3, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/03/2025',
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/03/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 4, maxAttendees: 5
     },
-    {title: 'Morning Jog',       time: '7:00AM, 11/02/2025',
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/02/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
      attendees: 5, maxAttendees: 5
     },
@@ -93,7 +94,7 @@ export default function ActivityHistoryPage() {
     const [pastList, setPastList] = useState(initPastList);
     const [currentAndFutureListOpen, setCurrentAndFutureListOpen] = useState(true);
     const [pastListOpen, setPastListOpen] = useState(true);
-    const [confirmPanelIndex, setConfirmPanelIndex] = useState<number | null>(null);
+    const [confirmPanelId, setConfirmPanelId] = useState<string | null>(null);
     const [rowSelected, setRowSelected] = useState<Activity | null>(null);
     const [activityPanelOpened, setActivityPanelOpened] = useState(false);
 
@@ -102,8 +103,8 @@ export default function ActivityHistoryPage() {
         setActivityPanelOpened(true);
     };
 
-    const deleteActivityFromPastList = (index: number) => {
-        setPastList((predicate) => predicate.filter((_, i) => i !== index));
+    const deleteActivityFromPastList = (id: string) => {
+        setPastList(prev => prev.filter(activity => activity.id !== id));
     };
 
     const onCancelButtonClick = () => {
@@ -135,21 +136,19 @@ export default function ActivityHistoryPage() {
                         <h2 className='text-lg font-bold text-black'>My Past Activities</h2>
                     </button>
                     {pastListOpen && (
-                        <ActivityTableWithDeleteButton items={pastList} onRowClick={onRowClick} onRequestDelete={(index) => {
-                            setConfirmPanelIndex(index);
+                        <ActivityTableWithDeleteButton items={pastList} onRowClick={onRowClick} onRequestDelete={(id) => {
+                            setConfirmPanelId(id);
                         }}/>
                     )}
                 </section>
 
                 <section>
-                    {confirmPanelIndex != null && (
+                    {confirmPanelId != null && (
                         <ConfirmPanel
-                            onCancel={() => {
-                                setConfirmPanelIndex(null);
-                            }}
+                            onCancel={() => setConfirmPanelId(null)}
                             onConfirm={() => {
-                                deleteActivityFromPastList(confirmPanelIndex);
-                                setConfirmPanelIndex(null);
+                                deleteActivityFromPastList(confirmPanelId);
+                                setConfirmPanelId(null);
                             }}
                         />
                     )}

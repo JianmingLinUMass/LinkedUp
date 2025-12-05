@@ -1,4 +1,5 @@
 export type Activity = {
+    id: string;
     title: string; 
     time: string;
     location: string;
@@ -29,12 +30,20 @@ export type ActivityPanelArgs = {
     onJoin?: (row: Activity) => void
 };
 
+function sortActivityList(items: Activity[]) {
+    return [...items].sort((row1, row2) => {
+        const date1 = parseActivityTime(row1.time);
+        const date2 = parseActivityTime(row2.time);
+        return date1.getTime() - date2.getTime();
+    });
+}
+
 export function ActivityTable({items, onRowClick}: ActivityBox) {
     return (
         <div >
-            <div className='rounded-md border divide-y'>
-                {items.map(row => (
-                    <div key={row.title + row.time} 
+            <div className='divide-y'>
+                {sortActivityList(items).map(row => (
+                    <div key={row.id} 
                         className='flex items-center justify-between px-3 py-3 text-sm md:text-base cursor-pointer'
                         onClick={() => onRowClick?.(row)}>
                         <span className='text-black'>{row.title}</span>
@@ -46,23 +55,23 @@ export function ActivityTable({items, onRowClick}: ActivityBox) {
     )
 }
 
-export function ActivityTableWithDeleteButton({items, onRowClick, onRequestDelete}: ActivityBox & { onRequestDelete?: (index: number) => void }) {
+export function ActivityTableWithDeleteButton({items, onRowClick, onRequestDelete}: ActivityBox & { onRequestDelete?: (id: string) => void }) {
     function DeleteButton({onDelete}: {onDelete: () => void}) {
         return (
             <button onClick={(e) => {
                     e.stopPropagation();
                     onDelete();
                 }} 
-                className='text-red-500 hover:text-red-700 font-bold text-2xl mr-1 w-8 h-8 rounded-full hover:bg-red-100'>
+                className='flex items-center justify-center text-red-500 hover:text-red-700 font-bold text-2xl mr-1 w-6 h-6 rounded-full hover:bg-red-100'>
                 x
             </button>
         )
     }
     return (
         <div >
-            <div className='rounded-md border divide-y'>
-                {items.map((row, index) => (
-                    <div key={row.title + row.time} 
+            <div className='divide-y'>
+                {sortActivityList(items).map((row) => (
+                    <div key={row.id} 
                         className='flex items-center justify-between px-3 py-3 text-sm md:text-base cursor-pointer'
                         onClick={() => onRowClick?.(row)}>
                         <span className='text-black'>{row.title}</span>
@@ -70,7 +79,7 @@ export function ActivityTableWithDeleteButton({items, onRowClick, onRequestDelet
                         <div className='flex items-center gap-2'>
                             <span className='text-black'>{row.time}</span>
                             {onRequestDelete && (
-                                <DeleteButton onDelete={() => onRequestDelete(index)} />
+                                <DeleteButton onDelete={() => onRequestDelete(row.id)} />
                             )}
                         </div>
                     </div>
@@ -79,4 +88,23 @@ export function ActivityTableWithDeleteButton({items, onRowClick, onRequestDelet
             </div>
         </div>
     )
+}
+
+export function parseActivityTime(timeStr: string) {
+  // Parse "7:00AM, 11/07/2025" format
+  const [time, date] = timeStr.split(', ');
+  const [month, day, year] = date.split('/');
+  
+  // Parse time
+  const timeMatch = time.match(/(\d+):(\d+)(AM|PM)/);
+  if (!timeMatch) return new Date(0);
+  
+  let hours = parseInt(timeMatch[1]);
+  const minutes = parseInt(timeMatch[2]);
+  const period = timeMatch[3];
+  
+  if (period === 'PM' && hours !== 12) hours += 12;
+  if (period === 'AM' && hours === 12) hours = 0;
+  
+  return new Date(parseInt(year), parseInt(month) - 1, parseInt(day), hours, minutes);
 }
