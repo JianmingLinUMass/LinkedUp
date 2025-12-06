@@ -1,14 +1,16 @@
+export type Participant = {
+    username: string;
+    avatar: string;
+}
+
 export type Activity = {
     id: string;
     title: string; 
     time: string;
     location: string;
-    creator: {
-        username: string;
-        avatar: string;
-    }
-    attendees: number;
+    creator: Participant;
     maxAttendees: number;
+    participants: Participant[];
 };
 
 export type ActivityCreationFields = {

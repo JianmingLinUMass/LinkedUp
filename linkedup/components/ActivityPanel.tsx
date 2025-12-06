@@ -22,7 +22,8 @@ export default function ActivityPanel({activity, onCancel, onJoin}: ActivityPane
                     <span className='font-bold text-black'>Activity Creator:</span>
                     <div className='flex items-center gap-1'>
                         <span className='font-bold text-gray-500'>{activity.creator.username}</span>
-                        <Image src={activity.creator.avatar} alt='User Profile Picture' width={36} height={36} className='object-cover rounded-full border border-gray-300'/>
+                        <Image src={activity.creator.avatar} alt='User Profile Picture' 
+                               width={36} height={36} className='object-cover rounded-full border border-gray-300'/>
                     </div>
                 </div>
 
@@ -43,9 +44,31 @@ export default function ActivityPanel({activity, onCancel, onJoin}: ActivityPane
                         <span className='font-bold text-sky-500'>{activity.time}</span>
                     </div>
 
-                    <div className='flex justify-between'>
-                        <span className='font-bold text-black'>Attendees: </span>
-                        <span className='font-bold text-sky-500'>{activity.attendees}/{activity.maxAttendees}</span>
+                    <div className='flex justify-between items-center'>
+                        <div className='flex items-center gap-2'>
+                            <span className='font-bold text-black'>Attendees: </span>
+                            <span className='font-bold text-sky-500 w-10 text-left ml-4'>
+                                {activity.participants.length}/{activity.maxAttendees}
+                            </span>
+                        </div>
+
+                        <div className='flex items-center gap-4'>
+                            <div className='flex -space-x-3'>
+                                {/* Show the avatars of the first 4 participants */}
+                                {activity.participants.slice(0, 4).map((participant, index) => (
+                                    <Image key={index} src={participant.avatar} alt={participant.username}
+                                        width={36} height={36} className='object-cover rounded-full border border-gray-300'
+                                    />
+                                ))}
+                                
+                                {/* Show the the rest of the participants as a '+' symbol */}
+                                {activity.participants.length > 4 && (
+                                    <div className='flex w-9 h-9 text-sm text-gray-600 font-bold items-center justify-center rounded-full border border-gray-300'>
+                                        +{activity.participants.length - 4}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
