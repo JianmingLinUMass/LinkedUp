@@ -1,6 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CalendarTimeline from '@/components/CalendarTimeline';
@@ -8,6 +7,7 @@ import ActivityPanel from '@/components/ActivityPanel';
 import GoToTopButton from '@/components/GoToTopButton'
 import type { Activity } from '@/schemas/ActivityRelated';
 import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
+import { GoBackToMainPage } from '@/components/PageNavigator';
 
 // Mock data
 const initCurrentAndFutureList: Activity[] = [
@@ -133,17 +133,6 @@ function ConfirmPanel({onCancel, onConfirm}: {onCancel: () => void; onConfirm: (
                 </div>
             </div>
         </div>
-    );
-}
-
-function GoBackToMainPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/main')} 
-                className='absolute left-0 text-4xl text-black font-bold cursor-pointer'>
-            ←
-        </button>
     );
 }
 

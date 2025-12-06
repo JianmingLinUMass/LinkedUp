@@ -1,19 +1,8 @@
 'use client'
 
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import type { ActivityCreationFields } from '@/schemas/ActivityRelated';
-
-function GoBackToMainPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/main')} 
-                className='absolute left-0 text-4xl text-black font-bold cursor-pointer'>
-            ←
-        </button>
-    );
-}
+import { GoBackToMainPage } from '@/components/PageNavigator';
 
 export default function ActivityCreationPage() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm<ActivityCreationFields>({
