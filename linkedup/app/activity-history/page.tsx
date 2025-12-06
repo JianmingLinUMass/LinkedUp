@@ -1,57 +1,115 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
+import GoToTopButton from '@/components/GoToTopButton'
 import type { Activity } from '@/schemas/ActivityRelated';
 import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
+import { GoBackToMainPage } from '@/components/PageNavigator';
 
 // Mock data
 const initCurrentAndFutureList: Activity[] = [
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Club Meetup',       time: '4:00PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Music Jam Session', time: '5:30PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Coding Night',      time: '8:00PM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/08/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
 ]
 // Mock data
 const initPastList: Activity[] = [
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 1, maxAttendees: 5
+     maxAttendees: 5, 
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'}
+     ]
     },
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/05/2023',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 2, maxAttendees: 5
+     maxAttendees: 5, 
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'},
+        {username: 'user002', avatar: '/lemon_drink.jpeg'}
+     ]
     },
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/04/2024',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 3, maxAttendees: 5
+     maxAttendees: 5, 
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'},
+        {username: 'user002', avatar: '/lemon_drink.jpeg'},
+        {username: 'user003', avatar: '/lemon_drink.jpeg'}
+     ]
     },
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/03/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 4, maxAttendees: 5
+     maxAttendees: 5, 
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'},
+        {username: 'user002', avatar: '/lemon_drink.jpeg'},
+        {username: 'user003', avatar: '/lemon_drink.jpeg'},
+        {username: 'user004', avatar: '/lemon_drink.jpeg'}
+     ]
     },
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/02/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 5, maxAttendees: 5
+     maxAttendees: 5,
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'},
+        {username: 'user002', avatar: '/lemon_drink.jpeg'},
+        {username: 'user003', avatar: '/lemon_drink.jpeg'},
+        {username: 'user004', avatar: '/lemon_drink.jpeg'},
+        {username: 'user005', avatar: '/lemon_drink.jpeg'}
+     ]
+    },
+    // duplicated data below is used for testing the 'GoToTopButton'
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/04/2024',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     maxAttendees: 5,      
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'},
+        {username: 'user002', avatar: '/lemon_drink.jpeg'},
+        {username: 'user003', avatar: '/lemon_drink.jpeg'}
+     ]
+    },
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/03/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     maxAttendees: 5,      
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'},
+        {username: 'user002', avatar: '/lemon_drink.jpeg'},
+        {username: 'user003', avatar: '/lemon_drink.jpeg'},
+        {username: 'user004', avatar: '/lemon_drink.jpeg'}
+     ]
+    },
+    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/02/2026',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     maxAttendees: 6, 
+     participants: [
+        {username: 'user001', avatar: '/lemon_drink.jpeg'},
+        {username: 'user002', avatar: '/lemon_drink.jpeg'},
+        {username: 'user003', avatar: '/lemon_drink.jpeg'},
+        {username: 'user004', avatar: '/lemon_drink.jpeg'},
+        {username: 'user005', avatar: '/lemon_drink.jpeg'},
+        {username: 'user006', avatar: '/lemon_drink.jpeg'}
+     ]
     },
 ]
 
@@ -75,17 +133,6 @@ function ConfirmPanel({onCancel, onConfirm}: {onCancel: () => void; onConfirm: (
                 </div>
             </div>
         </div>
-    );
-}
-
-function GoBackToMainPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/main')} 
-                className='absolute left-0 text-4xl text-black font-bold cursor-pointer'>
-            ←
-        </button>
     );
 }
 
@@ -207,6 +254,8 @@ export default function ActivityHistoryPage() {
                     </section>
                 </div>
             </main>
+
+            <GoToTopButton />
 
             <footer className='text-4x1 font-bold text-sky-500 text-center mt-3 mb-2'>
                 @LinkedUp

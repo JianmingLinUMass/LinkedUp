@@ -1,30 +1,8 @@
 'use client'
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
-function GoBackToMainPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/main')} 
-                className='absolute left-0 text-4xl text-black font-bold cursor-pointer'>
-            ←
-        </button>
-    );
-}
-
-function GoBackToLoginPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/log-in')} 
-                className='w-full py-2 rounded-md bg-red-500 text-white font-semibold hover:bg-red-600 cursor-pointer'>
-            Sign Out
-        </button>
-    );
-}
+import { GoBackToMainPage, GoBackToLoginPage } from '@/components/PageNavigator';
 
 function SaveChanges() {
     // Needs to apply changes to username and password

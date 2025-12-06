@@ -1,84 +1,69 @@
 'use client';
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
+import GoToTopButton from '@/components/GoToTopButton';
 import type { Activity } from '@/schemas/ActivityRelated';
 import { ActivityTable } from '@/schemas/ActivityRelated';
+import { GoToProfilePage, GoToActivityHistoryPage, GoToActivityCreationPage } from '@/components/PageNavigator';
 
 // Mock data
 const myActivityLst: Activity[] = [
     {id: uuidv4(), title: 'Morning Jog', time: '7:00AM, 11/07/2025', 
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5},
-
+     maxAttendees: 5, participants: []
+    },
     {id: uuidv4(), title: 'Club Meetup', time: '4:00PM, 11/08/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Music Jam Session', time: '5:30PM, 11/09/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Coding Night', time: '8:00PM, 11/10/2025',
      location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
+    },
+    // duplicated data below is used for testing the 'GoToTopButton'
+    {id: uuidv4(), title: 'Morning Jog', time: '7:00AM, 11/07/2025', 
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     maxAttendees: 5, participants: []
+    },
+    {id: uuidv4(), title: 'Club Meetup', time: '4:00PM, 11/08/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     maxAttendees: 5, participants: []
+    },
+    {id: uuidv4(), title: 'Music Jam Session', time: '5:30PM, 11/09/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     maxAttendees: 5, participants: []
+    },
+    {id: uuidv4(), title: 'Coding Night', time: '8:00PM, 11/10/2025',
+     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
+     maxAttendees: 5, participants: []
     },
 ]
 // Mock data
 const activityFeedsList: Activity[] = [
     {id: uuidv4(), title: 'Coffee Chat', time: '5:30PM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user4', avatar: '/orange_tart.jpg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Group Study', time: '8:15PM, 11/06/2025',
      location: 'Amherst', creator: {username: 'user5', avatar: '/orange_tart.jpg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Morning Frisbee', time: '7:30AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user6', avatar: '/orange_tart.jpg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
     {id: uuidv4(), title: 'Hiking Meetup', time: '9:00AM, 11/07/2025',
      location: 'Amherst', creator: {username: 'user7', avatar: '/orange_tart.jpg'},
-     attendees: 0, maxAttendees: 5
+     maxAttendees: 5, participants: []
     },
 ]
-
-// Transits to another page without using the 'Link' attribute
-function GoToActivityCreationPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/activity-creation')} 
-                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white hover:bg-sky-500 transition cursor-pointer'>
-            Post an Activity
-        </button>
-    );
-}
-function GoToActivityHistoryPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/activity-history')} 
-                className='mt-4 block w-full rounded-md bg-sky-400 py-2 text-center font-semibold text-white ≈ transition cursor-pointer'>
-            Activity History
-        </button>
-    );
-}
-function GoToProfilePage() {
-    const router = useRouter();
-
-    return (
-        <div onClick={() => router.push('/profile')} 
-             className='h-12 w-12 rounded-full overflow-hidden border cursor-pointer'>
-            <Image src='/lemon_drink.jpeg' alt='User Profile Picture' width={48} height={48} className='object-cover'/>
-        </div>
-    )
-}
 
 export default function MainPage() {
     const username = 'user123';
@@ -193,6 +178,8 @@ export default function MainPage() {
                     </section>
                 </div>
             </main>
+
+            <GoToTopButton />
 
             <footer className='text-4x1 font-bold text-sky-500 text-center mb-2'>
                 @LinkedUp
