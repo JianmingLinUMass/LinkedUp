@@ -1,35 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-
-type Activity = {
-  title: string;
-  time: string;
-};
+import type { Activity } from '@/schemas/ActivityRelated';
+import { parseActivityTime } from '@/schemas/ActivityRelated';
 
 type CalendarTimelineProps = {
   activities: Activity[];
 };
-
-function parseActivityTime(timeStr: string) {
-  // Parse "7:00AM, 11/07" format
-  const [time, date] = timeStr.split(', ');
-  const [month, day] = date.split('/');
-  const currentYear = new Date().getFullYear();
-  
-  // Parse time
-  const timeMatch = time.match(/(\d+):(\d+)(AM|PM)/);
-  if (!timeMatch) return null;
-  
-  let hours = parseInt(timeMatch[1]);
-  const minutes = parseInt(timeMatch[2]);
-  const period = timeMatch[3];
-  
-  if (period === 'PM' && hours !== 12) hours += 12;
-  if (period === 'AM' && hours === 12) hours = 0;
-  
-  return new Date(currentYear, parseInt(month) - 1, parseInt(day), hours, minutes);
-}
 
 function formatTime(date: Date) {
   return date.toLocaleTimeString('en-US', { 
@@ -113,7 +90,8 @@ export default function CalendarTimeline({ activities }: CalendarTimelineProps) 
             {selectedDate.toLocaleDateString('en-US', { 
               weekday: 'long', 
               month: 'long', 
-              day: 'numeric' 
+              day: 'numeric',
+              year: 'numeric'
             })}
           </h4>
           

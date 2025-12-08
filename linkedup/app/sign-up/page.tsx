@@ -12,9 +12,9 @@ type User = {
 const links = [{ name: 'Already have an account? Log in here', href: '/log-in' }];
 
 export default function SignupPage() {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
 	const handleSubmitForm = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -58,18 +58,19 @@ export default function SignupPage() {
 					Sign up an account for LinkedUp
 				</p>
 
-				<form onSubmit={handleSubmitForm} className='space-y-5'>
-					<div>
-						<label className='block text-black font-bold mb-1'>Email</label>
-						<input
-							type='email'
-							className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
-							placeholder='Enter your email'
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							required
-						/>
-					</div>
+                <form onSubmit={handleSubmitForm} className='space-y-5'>
+                    <div>
+                        <label className='block text-black font-bold mb-1'>
+                            Email
+                        </label>
+                        <input type='email' 
+                               className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
+                               placeholder='Enter your email'
+                               value={email}
+                               onChange={(e) => setEmail(e.target.value)}
+                               required
+                        />
+                    </div>
 
 					<div className='flex items-center justify-between mb-1'>
 						<label className='block text-black font-bold'>Password</label>

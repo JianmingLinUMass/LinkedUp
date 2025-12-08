@@ -1,30 +1,8 @@
 'use client'
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
-function GoBackToMainPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/main')} 
-                className='absolute left-0 text-4xl text-black font-bold cursor-pointer'>
-            ←
-        </button>
-    );
-}
-
-function GoBackToLoginPage() {
-    const router = useRouter();
-
-    return (
-        <button onClick={() => router.push('/log-in')} 
-                className='w-full py-2 rounded-md bg-red-500 text-white font-semibold hover:bg-red-600 cursor-pointer'>
-            Sign Out
-        </button>
-    );
-}
+import { GoBackToMainPage, GoBackToLoginPage } from '@/components/PageNavigator';
 
 function SaveChanges() {
     // Needs to apply changes to username and password
@@ -38,7 +16,7 @@ export default function ProfilePage() {
 
     const [username, setUsername] = useState('user123');
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [userNewPassword, setUserNewPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
     const [showNewPassword, setShowNewPassword] = useState(false);
 
     return(
@@ -88,7 +66,7 @@ export default function ProfilePage() {
                     New Password
                 </label>
                 <div className='flex items-center gap-3 mb-4'>
-                    <input type={showNewPassword ? 'text' : 'password'} value={userNewPassword} onChange={(e) => setUserNewPassword(e.target.value)} 
+                    <input type={showNewPassword ? 'text' : 'password'} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} 
                            className='w-full border border-gray-200 rounded-md p-2 mb-2 text-black focus:outline-none focus:ring-2 focus:ring-sky-300 tracking-wide'/>
                     <button onClick={() => setShowNewPassword(!showNewPassword)}
                             className='text-xs px-2 w-16 rounded-md text-center text-black border border-gray-300 bg-gray-100'>
