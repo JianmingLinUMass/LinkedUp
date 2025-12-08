@@ -12,21 +12,22 @@ type User = {
 const links = [{ name: 'Already have an account? Log in here', href: '/log-in' }];
 
 export default function SignupPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleSubmitForm = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		const checkRes = await fetch('/api/users');
-		const existingUsers: User[] = await checkRes.json();
-		const emailExists = existingUsers.some((user) => user.email.toLowerCase() === email.toLowerCase());
-
-		if (emailExists) {
-			alert('This email is already registered. Please log in instead.');
-			return;
-		}
+		// const checkRes = await fetch('/api/users');
+		// const existingUsers: User[] = await checkRes.json();
+		// const emailExists = existingUsers.some(
+		//   (user) => user.email.toLowerCase() === email.toLowerCase()
+		// );
+		// if (emailExists) {
+		//   alert('This email is already registered. Please log in instead.');
+		//   return;
+		// }
 
 		const reentered = prompt('Re-enter your password to confirm:');
 		if (reentered !== password) {
@@ -40,13 +41,18 @@ export default function SignupPage() {
 			body: JSON.stringify({ email, password })
 		});
 
+		const data = await res.json();
+
 		if (!res.ok) {
-			const data = await res.json();
-			alert(data.error || 'Sign up failed.');
+			if (res.status === 409) {
+				alert('This email is already registered. Please log in instead.');
+			} else {
+				alert(data.error || 'Sign up failed.');
+			}
 			return;
 		}
 
-		alert('Account created successfully!'); //should update to a css pop up
+		alert('Account created successfully!');
 		window.location.href = '/log-in';
 	};
 
@@ -58,19 +64,18 @@ export default function SignupPage() {
 					Sign up an account for LinkedUp
 				</p>
 
-                <form onSubmit={handleSubmitForm} className='space-y-5'>
-                    <div>
-                        <label className='block text-black font-bold mb-1'>
-                            Email
-                        </label>
-                        <input type='email' 
-                               className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
-                               placeholder='Enter your email'
-                               value={email}
-                               onChange={(e) => setEmail(e.target.value)}
-                               required
-                        />
-                    </div>
+				<form onSubmit={handleSubmitForm} className='space-y-5'>
+					<div>
+						<label className='block text-black font-bold mb-1'>Email</label>
+						<input
+							type='email'
+							className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
+							placeholder='Enter your email'
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							required
+						/>
+					</div>
 
 					<div className='flex items-center justify-between mb-1'>
 						<label className='block text-black font-bold'>Password</label>
