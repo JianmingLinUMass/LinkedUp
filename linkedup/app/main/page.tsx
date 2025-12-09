@@ -80,6 +80,10 @@ export default function MainPage() {
 		return activity.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase());
 	};
 
+	const isActivityCreator = (activity: Activity) => {
+		return activity.creator?.username?.toLowerCase() === username.toLowerCase();
+	};
+
 	const onJoinButtonClick = async () => {
 		if (!rowSelected) return;
 
@@ -190,6 +194,64 @@ export default function MainPage() {
 		}
 	};
 
+	const onDeleteButtonClick = async () => {
+		if (!rowSelected) return;
+
+		const userEmail = localStorage.getItem('currentUserEmail');
+
+		if (!userEmail) {
+			alert('Please log in to delete activities');
+			return;
+		}
+
+		if (!confirm('Are you sure you want to delete this activity?')) {
+			return;
+		}
+
+		try {
+			const res = await fetch('/api/delete-activity', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					activityId: rowSelected.id,
+					userEmail
+				})
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				alert(data.error || 'Failed to delete activity');
+				return;
+			}
+
+			alert('Activity deleted successfully!');
+			setActivityPanelOpened(false);
+			
+			// Refresh activities
+			const refreshRes = await fetch('/api/activity');
+			if (refreshRes.ok) {
+				const activities: Activity[] = await refreshRes.json();
+				
+				const mine = activities.filter((a) => 
+					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
+				
+				const feeds = activities.filter((a) => 
+					a.creator?.username?.toLowerCase() !== username.toLowerCase() &&
+					!a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
+				
+				setMyActivities(mine);
+				setFeedActivities(feeds);
+			}
+		} catch (err) {
+			console.error('Error deleting activity:', err);
+			alert('Failed to delete activity');
+		}
+	};
+
 	return (
 		<div className='min-h-screen flex flex-col bg-white px-4 py-4'>
 			<main className='flex-grow flex justify-center'>
@@ -288,7 +350,9 @@ export default function MainPage() {
 								onCancel={onCancelButtonClick} 
 								onJoin={onJoinButtonClick}
 								onLeave={onLeaveButtonClick}
+								onDelete={onDeleteButtonClick}
 								isJoined={isActivityJoined(rowSelected)}
+								isCreator={isActivityCreator(rowSelected)}
 							/>
 						)}
 					</section>
