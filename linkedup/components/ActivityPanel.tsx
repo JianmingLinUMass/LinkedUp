@@ -9,7 +9,7 @@ import type { ActivityPanelArgs } from '@/schemas/ActivityRelated';
    2. Activity Title, Location, Date and Time (not using Calendar), Max Attendees (current / max)
    3. A 'join' button and a 'cancel' button
 */ 
-export default function ActivityPanel({activity, onCancel, onJoin, onLeave, isJoined}: ActivityPanelArgs) {
+export default function ActivityPanel({activity, onCancel, onJoin, onLeave, onDelete, isJoined, isCreator}: ActivityPanelArgs) {
     return (
         <div className='fixed inset-0 bg-black/30 flex items-center justify-center'>
             <div className='bg-white p-5 rounded-xl border w-80 text-center'>
@@ -72,9 +72,15 @@ export default function ActivityPanel({activity, onCancel, onJoin, onLeave, isJo
                     </div>
                 </div>
 
-                {/* Join/Leave and Cancel Buttons */}
+                {/* Action and Cancel Buttons */}
                 <div className='mt-4 flex justify-center gap-10'>
-                    {isJoined ? (
+                    {isCreator ? (
+                        onDelete && (
+                            <button onClick={() => onDelete?.(activity)} className='px-2 py-1 text-white font-semibold bg-red-600 border rounded hover:bg-red-700 cursor-pointer'>
+                                Delete
+                            </button>
+                        )
+                    ) : isJoined ? (
                         onLeave && (
                             <button onClick={() => onLeave?.(activity)} className='px-2 py-1 text-white font-semibold bg-red-500 border rounded hover:bg-red-600 cursor-pointer'>
                                 Leave

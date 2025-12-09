@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 			time: timeAndDate, // matches your existing "7:00AM, 11/07/2025" format
 			maxAttendees,
 			creator,
-			participants: []
+			participants: [creator] // Creator automatically joins
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
