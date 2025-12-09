@@ -1,84 +1,96 @@
-'use client'
+'use client';
 
 import Link from 'next/link';
 import { useState } from 'react';
 
 const links = [
-    {name: "Don't have an account? Sign up", href: '/sign-up'},
-    {name: 'Forgot password? Click here', href: '/forgot-password'}
+	{ name: "Don't have an account? Sign up", href: '/sign-up' },
+	{ name: 'Forgot password? Click here', href: '/forgot-password' }
 ];
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 
-    const handleSubmitForm = (e: React.FormEvent) => {
-        e.preventDefault();
+	const handleSubmitForm = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-        // Step1: Verify whether the combination of input email and password exist in database.
+		const res = await fetch('/api/login', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ email, password })
+		});
 
-        // Step2: Log in successfully. Open the Main Page.
-        window.location.href = '/main';
-    }
+		const data: { id?: string; email?: string; error?: string } = await res.json();
 
-    return(
-        <div className='min-h-screen flex items-center justify-center bg-white px-4'>
-            <div className='bg-white p-6 md:p-8 rounded-2xl shadow-md w-full max-w-sm md:max-w-md border'>
-                <h1 className='text-3xl md:text-4xl font-bold text-sky-500 text-center mb-1'>
-                    LinkedUp
-                </h1>
-                <p className='text-center text-gray-500 mb-6 md:mb-8 font-bold text-sm md:text-base'>
-                    Activities, made easy.
-                </p>
+		if (!res.ok) {
+			alert(data.error || 'Login failed. Please try again.');
+			return;
+		}
 
-                <form onSubmit={handleSubmitForm} className='space-y-5'>
-                    <div>
-                        <label className='block text-black font-bold mb-1'>
-                            Email
-                        </label>
-                        <input type='email' 
-                               className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
-                               placeholder='Enter your email'
-                               value={email}
-                               onChange={(e) => setEmail(e.target.value)}
-                               required 
-                        />
-                    </div>
+		if (data.id && data.email) {
+			localStorage.setItem('currentUserEmail', data.email);
+			localStorage.setItem('currentUserId', data.id);
+		}
 
-                    <div>
-                        <label className='block text-black font-bold mb-1'>
-                            Password
-                        </label>
-                        <input type='password' 
-                               className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
-                               placeholder='Enter your password'
-                               value={password}
-                               onChange={(e) => setPassword(e.target.value)}
-                               required 
-                        />
-                    </div>
+		window.location.href = '/main';
+	};
 
-                    <div>
-                        <button type='submit' 
-                                className='w-full bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 rounded-md transition'>
-                            Log In
-                        </button>
-                    </div>
-                </form>
 
-                <div className='text-center mt-6 space-y-2'>
-                    <p className='text-sm text'>
-                        <Link href={links[0].href} className='text-sky-400 hover:underline'>
-                            {links[0].name}
-                        </Link>
-                    </p>
-                    <p className='text-sm'>
-                        <Link href={links[1].href} className='text-sky-400 hover:underline'>
-                            {links[1].name}
-                        </Link>
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
+	return (
+		<div className='min-h-screen flex items-center justify-center bg-white px-4'>
+			<div className='bg-white p-6 md:p-8 rounded-2xl shadow-md w-full max-w-sm md:max-w-md border'>
+				<h1 className='text-3xl md:text-4xl font-bold text-sky-500 text-center mb-1'>LinkedUp</h1>
+				<p className='text-center text-gray-500 mb-6 md:mb-8 font-bold text-sm md:text-base'>Activities, made easy.</p>
+
+				<form onSubmit={handleSubmitForm} className='space-y-5'>
+					<div>
+						<label className='block text-black font-bold mb-1'>Email</label>
+						<input
+							type='email'
+							className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
+							placeholder='Enter your email'
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							required
+						/>
+					</div>
+
+					<div>
+						<label className='block text-black font-bold mb-1'>Password</label>
+						<input
+							type='password'
+							className='w-full border rounded-md p-2 text-black placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-300'
+							placeholder='Enter your password'
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							required
+						/>
+					</div>
+
+					<div>
+						<button
+							type='submit'
+							className='w-full bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 rounded-md transition'
+						>
+							Log In
+						</button>
+					</div>
+				</form>
+
+				<div className='text-center mt-6 space-y-2'>
+					<p className='text-sm text'>
+						<Link href={links[0].href} className='text-sky-400 hover:underline'>
+							{links[0].name}
+						</Link>
+					</p>
+					<p className='text-sm'>
+						<Link href={links[1].href} className='text-sky-400 hover:underline'>
+							{links[1].name}
+						</Link>
+					</p>
+				</div>
+			</div>
+		</div>
+	);
 }
