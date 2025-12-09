@@ -42,8 +42,17 @@ export default function MainPage() {
 
 				const data: Activity[] = await res.json();
 
-				const mine = data.filter((a) => a.creator?.username?.toLowerCase() === username.toLowerCase());
-				const feeds = data.filter((a) => a.creator?.username?.toLowerCase() !== username.toLowerCase());
+				// My activities = created by me OR joined by me
+				const mine = data.filter((a) => 
+					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
+				
+				// Feeds = not created by me AND not joined by me
+				const feeds = data.filter((a) => 
+					a.creator?.username?.toLowerCase() !== username.toLowerCase() &&
+					!a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
 
 				setMyActivities(mine);
 				setFeedActivities(feeds);
@@ -67,8 +76,118 @@ export default function MainPage() {
 		setActivityPanelOpened(false);
 	};
 
-	const onJoinButtonClick = () => {
-		console.log('Joined activity: ', rowSelected);
+	const isActivityJoined = (activity: Activity) => {
+		return activity.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase());
+	};
+
+	const onJoinButtonClick = async () => {
+		if (!rowSelected) return;
+
+		const userId = localStorage.getItem('currentUserId');
+		const userEmail = localStorage.getItem('currentUserEmail');
+
+		if (!userId) {
+			alert('Please log in to join activities');
+			return;
+		}
+
+		try {
+			const res = await fetch('/api/join-activity', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					activityId: rowSelected.id,
+					userId,
+					userEmail
+				})
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				alert(data.error || 'Failed to join activity');
+				return;
+			}
+
+			alert('Successfully joined activity!');
+			setActivityPanelOpened(false);
+			
+			// Refresh activities
+			const refreshRes = await fetch('/api/activity');
+			if (refreshRes.ok) {
+				const activities: Activity[] = await refreshRes.json();
+				
+				const mine = activities.filter((a) => 
+					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
+				
+				const feeds = activities.filter((a) => 
+					a.creator?.username?.toLowerCase() !== username.toLowerCase() &&
+					!a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
+				
+				setMyActivities(mine);
+				setFeedActivities(feeds);
+			}
+		} catch (err) {
+			console.error('Error joining activity:', err);
+			alert('Failed to join activity');
+		}
+	};
+
+	const onLeaveButtonClick = async () => {
+		if (!rowSelected) return;
+
+		const userEmail = localStorage.getItem('currentUserEmail');
+
+		if (!userEmail) {
+			alert('Please log in to leave activities');
+			return;
+		}
+
+		try {
+			const res = await fetch('/api/leave-activity', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					activityId: rowSelected.id,
+					userEmail
+				})
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				alert(data.error || 'Failed to leave activity');
+				return;
+			}
+
+			alert('Successfully left activity!');
+			setActivityPanelOpened(false);
+			
+			// Refresh activities
+			const refreshRes = await fetch('/api/activity');
+			if (refreshRes.ok) {
+				const activities: Activity[] = await refreshRes.json();
+				
+				const mine = activities.filter((a) => 
+					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
+				
+				const feeds = activities.filter((a) => 
+					a.creator?.username?.toLowerCase() !== username.toLowerCase() &&
+					!a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+				);
+				
+				setMyActivities(mine);
+				setFeedActivities(feeds);
+			}
+		} catch (err) {
+			console.error('Error leaving activity:', err);
+			alert('Failed to leave activity');
+		}
 	};
 
 	return (
@@ -151,7 +270,11 @@ export default function MainPage() {
 						) : showCalendarFeedList ? (
 							<CalendarTimeline activities={feedActivities} />
 						) : (
-							feedListOpen && <ActivityTable items={feedActivities} onRowClick={onRowClick} />
+							feedListOpen && (
+								<div className='rounded-md border'>
+									<ActivityTable items={feedActivities} onRowClick={onRowClick} />
+								</div>
+							)
 						)}
 
 						<GoToActivityCreationPage />
@@ -160,7 +283,13 @@ export default function MainPage() {
 					{/* Activity Panel */}
 					<section className='mt-4'>
 						{activityPanelOpened && rowSelected && (
-							<ActivityPanel activity={rowSelected} onCancel={onCancelButtonClick} onJoin={onJoinButtonClick} />
+							<ActivityPanel 
+								activity={rowSelected} 
+								onCancel={onCancelButtonClick} 
+								onJoin={onJoinButtonClick}
+								onLeave={onLeaveButtonClick}
+								isJoined={isActivityJoined(rowSelected)}
+							/>
 						)}
 					</section>
 				</div>

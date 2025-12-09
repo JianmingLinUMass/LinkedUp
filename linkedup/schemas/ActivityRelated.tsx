@@ -28,7 +28,9 @@ export type ActivityBox = {
 export type ActivityPanelArgs = {
     activity: Activity;
     onCancel: () => void; 
-    onJoin?: (row: Activity) => void
+    onJoin?: (row: Activity) => void;
+    onLeave?: (row: Activity) => void;
+    isJoined?: boolean;
 };
 
 function sortActivityList(items: Activity[]) {
