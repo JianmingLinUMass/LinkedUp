@@ -5,7 +5,7 @@ import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
 import GoToTopButton from '@/components/GoToTopButton';
 import type { Activity } from '@/schemas/ActivityRelated';
-import { ActivityTable } from '@/schemas/ActivityRelated';
+import { ActivityTable, parseActivityTime } from '@/schemas/ActivityRelated';
 import { GoToProfilePage, GoToActivityHistoryPage, GoToActivityCreationPage } from '@/components/PageNavigator';
 
 export default function MainPage() {
@@ -42,16 +42,18 @@ export default function MainPage() {
 
 				const data: Activity[] = await res.json();
 
-				// My activities = created by me OR joined by me
+				// My activities = created by me OR joined by me AND not past
 				const mine = data.filter((a) => 
-					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
-					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+					(a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())) &&
+					parseActivityTime(a.time) >= new Date()
 				);
 				
 				// Feeds = not created by me AND not joined by me
 				const feeds = data.filter((a) => 
 					a.creator?.username?.toLowerCase() !== username.toLowerCase() &&
-					!a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+					!a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase()) &&
+					parseActivityTime(a.time) >= new Date()
 				);
 
 				setMyActivities(mine);
@@ -122,8 +124,9 @@ export default function MainPage() {
 				const activities: Activity[] = await refreshRes.json();
 				
 				const mine = activities.filter((a) => 
-					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
-					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+					(a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())) &&
+					parseActivityTime(a.time) >= new Date()
 				);
 				
 				const feeds = activities.filter((a) => 
@@ -176,8 +179,9 @@ export default function MainPage() {
 				const activities: Activity[] = await refreshRes.json();
 				
 				const mine = activities.filter((a) => 
-					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
-					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+					(a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())) &&
+					parseActivityTime(a.time) >= new Date()
 				);
 				
 				const feeds = activities.filter((a) => 
@@ -234,8 +238,9 @@ export default function MainPage() {
 				const activities: Activity[] = await refreshRes.json();
 				
 				const mine = activities.filter((a) => 
-					a.creator?.username?.toLowerCase() === username.toLowerCase() ||
-					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())
+					(a.creator?.username?.toLowerCase() === username.toLowerCase() ||
+					a.participants?.some((p) => p.username?.toLowerCase() === username.toLowerCase())) &&
+					parseActivityTime(a.time) >= new Date()
 				);
 				
 				const feeds = activities.filter((a) => 
