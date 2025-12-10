@@ -154,8 +154,31 @@ export default function ActivityHistoryPage() {
 						{confirmPanelId != null && (
 							<ConfirmPanel
 								onCancel={() => setConfirmPanelId(null)}
-								onConfirm={() => {
-									deleteActivityFromPastList(confirmPanelId);
+								onConfirm={async () => {
+									const userEmail = localStorage.getItem('currentUserEmail');
+									if (!userEmail) {
+										alert('Please log in to delete activities');
+										return;
+									}
+									try {
+										const res = await fetch('/api/delete-activity', {
+											method: 'POST',
+											headers: { 'Content-Type': 'application/json' },
+											body: JSON.stringify({
+												activityId: confirmPanelId,
+												userEmail
+											})
+										});
+										if (res.ok) {
+											deleteActivityFromPastList(confirmPanelId);
+										} else {
+											const data = await res.json();
+											alert(data.error || 'Failed to delete activity');
+										}
+									} catch (err) {
+										console.error('Error deleting activity:', err);
+										alert('Failed to delete activity');
+									}
 									setConfirmPanelId(null);
 								}}
 							/>
