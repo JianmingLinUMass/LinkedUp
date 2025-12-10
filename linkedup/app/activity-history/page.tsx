@@ -6,32 +6,9 @@ import CalendarTimeline from '@/components/CalendarTimeline';
 import ActivityPanel from '@/components/ActivityPanel';
 import GoToTopButton from '@/components/GoToTopButton'
 import type { Activity } from '@/schemas/ActivityRelated';
-import { ActivityTable, ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
+import { ActivityTableWithDeleteButton } from '@/schemas/ActivityRelated';
 import { GoBackToMainPage } from '@/components/PageNavigator';
 
-// Mock data
-const initCurrentAndFutureList: Activity[] = [
-    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/07/2025',
-     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     maxAttendees: 5, participants: []
-    },
-    {id: uuidv4(), title: 'Club Meetup',       time: '4:00PM, 11/07/2025',
-     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     maxAttendees: 5, participants: []
-    },
-    {id: uuidv4(), title: 'Music Jam Session', time: '5:30PM, 11/07/2025',
-     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     maxAttendees: 5, participants: []
-    },
-    {id: uuidv4(), title: 'Coding Night',      time: '8:00PM, 11/07/2025',
-     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     maxAttendees: 5, participants: []
-    },
-    {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/08/2025',
-     location: 'Amherst', creator: {username: 'user123', avatar: '/lemon_drink.jpeg'},
-     maxAttendees: 5, participants: []
-    },
-]
 // Mock data
 const initPastList: Activity[] = [
     {id: uuidv4(), title: 'Morning Jog',       time: '7:00AM, 11/06/2025',
@@ -137,14 +114,8 @@ function ConfirmPanel({onCancel, onConfirm}: {onCancel: () => void; onConfirm: (
 }
 
 export default function ActivityHistoryPage() {
-    // setCurrentAndFutureList is not used as currentAndFutureList should not be modified with the delete activity buttons
-    const [currentAndFutureList, setCurrentAndFutureList] = useState(initCurrentAndFutureList);
     const [pastList, setPastList] = useState(initPastList);
-
-    const [currentAndFutureListOpen, setCurrentAndFutureListOpen] = useState(true);
     const [pastListOpen, setPastListOpen] = useState(true);
-
-    const [showCalendarCurrentAndFutureList, setShowCalendarCurrentAndFutureList] = useState(false);
     const [showCalendarPastList, setShowCalendarPastList] = useState(false);
 
     const [confirmPanelId, setConfirmPanelId] = useState<string | null>(null);
@@ -175,34 +146,6 @@ export default function ActivityHistoryPage() {
                             Activity History
                         </h1>
                     </div>
-
-                    <section className='mt-4'>
-                        <div className='flex items-center justify-between py-2'>
-                            <button onClick={() => setCurrentAndFutureListOpen(!currentAndFutureListOpen)} className='text-left cursor-pointer'>
-                                <h2 className='text-lg font-bold text-black'>My Current & Future Activities</h2>
-                            </button>
-                            <button 
-                                onClick={() => setShowCalendarCurrentAndFutureList(!showCalendarCurrentAndFutureList)}
-                                className={`w-20 px-3 py-1 rounded-md text-sm font-medium transition cursor-pointer ${
-                                    showCalendarCurrentAndFutureList 
-                                        ? 'bg-gray-200 text-gray-600 hover:bg-gray-200'
-                                        : 'bg-sky-400 text-white' 
-                                }`}
-                            >
-                                {showCalendarCurrentAndFutureList ? 'List' : 'Calendar'}
-                            </button>
-                        </div>
-
-                        {showCalendarCurrentAndFutureList ? (
-                            <CalendarTimeline activities={currentAndFutureList} />
-                        ) : (
-                            currentAndFutureListOpen && (
-                                <div className={'rounded-md border'}>
-                                    <ActivityTable items={currentAndFutureList} onRowClick={onRowClick}/>
-                                </div>
-                            )
-                        )}
-                    </section>
 
                     <section className='mt-4'>
                         <div className='flex items-center justify-between py-2'>
