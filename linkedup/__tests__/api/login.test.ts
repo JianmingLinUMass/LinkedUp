@@ -9,13 +9,21 @@ const MOCK_ID = 'mock-id-123';
 
 jest.mock('@/lib/mongodb');
 jest.mock('mongoose', () => {
-	const actual = jest.requireActual('mongoose');
+	const mockUser = {
+		findOne: jest.fn().mockReturnThis(),
+		lean: jest.fn()
+	};
 	return {
-		...actual,
-		models: {},
-		model: jest.fn()
+		models: { User: mockUser },
+		model: jest.fn(() => mockUser),
+		Schema: jest.fn()
 	};
 });
+
+const mockUser = (mongoose as any).models?.User || {
+	findOne: jest.fn().mockReturnThis(),
+	lean: jest.fn()
+};
 
 interface MockUser {
 	_id: string;
@@ -23,27 +31,17 @@ interface MockUser {
 	password: string;
 }
 
-interface MockModel {
-	findOne: jest.Mock;
-}
-
 describe('POST /api/login', () => {
-	let mockUser: MockUser;
-	let mockModel: MockModel;
+	let testUser: MockUser;
 
 	beforeEach(() => {
 		jest.clearAllMocks();
-		mockUser = {
+		testUser = {
 			_id: MOCK_ID,
 			email: TEST_EMAIL,
 			password: TEST_PASSWORD
 		};
 
-		mockModel = {
-			findOne: jest.fn()
-		};
-
-		(mongoose.model as jest.Mock).mockReturnValue(mockModel);
 		(dbConnect as jest.Mock).mockResolvedValue(undefined);
 	});
 
@@ -53,7 +51,7 @@ describe('POST /api/login', () => {
 
 	// Normative case: successful login
 	it('should login successfully with valid credentials', async () => {
-		mockModel.findOne.mockResolvedValue(mockUser);
+		mockUser.lean.mockResolvedValue(testUser);
 
 		const req = new Request('http://localhost/api/login', {
 			method: 'POST',
@@ -66,7 +64,7 @@ describe('POST /api/login', () => {
 		expect(response.status).toBe(200);
 		expect(data).toEqual({ id: MOCK_ID, email: TEST_EMAIL });
 		expect(dbConnect).toHaveBeenCalledTimes(1);
-		expect(mockModel.findOne).toHaveBeenCalledWith({ email: TEST_EMAIL });
+		expect(mockUser.findOne).toHaveBeenCalledWith({ email: TEST_EMAIL, password: TEST_PASSWORD });
 	});
 
 	// Exceptional case: missing email
@@ -80,8 +78,8 @@ describe('POST /api/login', () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(400);
-		expect(data).toEqual({ error: 'Missing credentials' });
-		expect(mockModel.findOne).not.toHaveBeenCalled();
+		expect(data).toEqual({ error: 'Email and password are required' });
+		expect(mockUser.findOne).not.toHaveBeenCalled();
 	});
 
 	// Exceptional case: missing password
@@ -95,8 +93,8 @@ describe('POST /api/login', () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(400);
-		expect(data).toEqual({ error: 'Missing credentials' });
-		expect(mockModel.findOne).not.toHaveBeenCalled();
+		expect(data).toEqual({ error: 'Email and password are required' });
+		expect(mockUser.findOne).not.toHaveBeenCalled();
 	});
 
 	// Boundary case: empty email
@@ -110,7 +108,7 @@ describe('POST /api/login', () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(400);
-		expect(data).toEqual({ error: 'Missing credentials' });
+		expect(data).toEqual({ error: 'Email and password are required' });
 	});
 
 	// Boundary case: empty password
@@ -124,12 +122,12 @@ describe('POST /api/login', () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(400);
-		expect(data).toEqual({ error: 'Missing credentials' });
+		expect(data).toEqual({ error: 'Email and password are required' });
 	});
 
 	// Exceptional case: user not found
 	it('should return 401 when user does not exist', async () => {
-		mockModel.findOne.mockResolvedValue(null);
+		mockUser.lean.mockResolvedValue(null);
 
 		const req = new Request('http://localhost/api/login', {
 			method: 'POST',
@@ -140,12 +138,12 @@ describe('POST /api/login', () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(401);
-		expect(data).toEqual({ error: 'Invalid credentials' });
+		expect(data).toEqual({ error: 'Invalid email or password' });
 	});
 
 	// Exceptional case: incorrect password
 	it('should return 401 when password is incorrect', async () => {
-		mockModel.findOne.mockResolvedValue(mockUser);
+		mockUser.lean.mockResolvedValue(null);
 
 		const req = new Request('http://localhost/api/login', {
 			method: 'POST',
@@ -156,12 +154,12 @@ describe('POST /api/login', () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(401);
-		expect(data).toEqual({ error: 'Invalid credentials' });
+		expect(data).toEqual({ error: 'Invalid email or password' });
 	});
 
 	// Boundary case: case-sensitive email
 	it('should be case-sensitive for email', async () => {
-		mockModel.findOne.mockResolvedValue(null);
+		mockUser.lean.mockResolvedValue(null);
 
 		const req = new Request('http://localhost/api/login', {
 			method: 'POST',
@@ -172,7 +170,7 @@ describe('POST /api/login', () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(401);
-		expect(mockModel.findOne).toHaveBeenCalledWith({ email: 'TEST@EXAMPLE.COM' });
+		expect(mockUser.findOne).toHaveBeenCalledWith({ email: 'TEST@EXAMPLE.COM', password: TEST_PASSWORD });
 	});
 
 	// Exceptional case: database connection failure
@@ -193,7 +191,7 @@ describe('POST /api/login', () => {
 
 	// Exceptional case: database query failure
 	it('should return 500 when database query fails', async () => {
-		mockModel.findOne.mockRejectedValue(new Error('Query failed'));
+		mockUser.lean.mockRejectedValue(new Error('Query failed'));
 
 		const req = new Request('http://localhost/api/login', {
 			method: 'POST',
@@ -214,7 +212,7 @@ describe('POST /api/login', () => {
 			email: 'test+tag@example.com',
 			password: '!@#$%^&*()'
 		};
-		mockModel.findOne.mockResolvedValue(specialUser);
+		mockUser.lean.mockResolvedValue(specialUser);
 
 		const req = new Request('http://localhost/api/login', {
 			method: 'POST',
@@ -230,7 +228,7 @@ describe('POST /api/login', () => {
 
 	// Normative case: verify password is not returned
 	it('should not return password in response', async () => {
-		mockModel.findOne.mockResolvedValue(mockUser);
+		mockUser.lean.mockResolvedValue(testUser);
 
 		const req = new Request('http://localhost/api/login', {
 			method: 'POST',
