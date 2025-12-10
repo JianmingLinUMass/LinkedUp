@@ -16,7 +16,8 @@ export type Activity = {
 export type ActivityCreationFields = {
     title: string;
     location: string;
-    timeAndDate: string;
+    date: string;
+    time: string;
     maxAttendees: number;
 }
 
