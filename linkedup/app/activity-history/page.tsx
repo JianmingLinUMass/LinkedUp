@@ -97,8 +97,6 @@ export default function ActivityHistoryPage() {
 	};
 
 	const deleteActivityFromPastList = (id: string) => {
-		// currently just removes from UI; if you want to persist deletion,
-		// add a DELETE API call here.
 		setPastList((prev) => prev.filter((activity) => activity.id !== id));
 	};
 
