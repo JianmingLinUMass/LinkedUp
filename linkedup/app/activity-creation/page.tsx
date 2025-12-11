@@ -12,6 +12,7 @@ export default function ActivityCreationPage() {
 		register,
 		handleSubmit,
 		reset,
+		getValues,
 		formState: { errors }
 	} = useForm<ActivityCreationFields>({
 		mode: 'onSubmit',
@@ -23,11 +24,22 @@ export default function ActivityCreationPage() {
 
 		const currentUserEmail = typeof window !== 'undefined' ? localStorage.getItem('currentUserEmail') : null;
 
+		// Convert separate date and time to the expected format
+		const dateObj = new Date(data.date + 'T' + data.time);
+		const hours = dateObj.getHours();
+		const minutes = dateObj.getMinutes();
+		const ampm = hours >= 12 ? 'PM' : 'AM';
+		const displayHours = hours % 12 || 12;
+		const timeAndDate = `${displayHours}:${minutes.toString().padStart(2, '0')}${ampm}, ${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getDate().toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+
 		const res = await fetch('/api/activity', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				...data,
+				title: data.title,
+				location: data.location,
+				timeAndDate,
+				maxAttendees: data.maxAttendees,
 				currentUserEmail
 			})
 		});
@@ -45,23 +57,11 @@ export default function ActivityCreationPage() {
 		router.push('/main');
 	};
 
-	const validateTimeAndDate = (timeAndDateValue: string) => {
-		const match = timeAndDateValue.match(/^(\d{1,2}):(\d{2})(AM|PM), (\d{2})\/(\d{2})\/(\d{4})$/i);
-		if (!match) return true;
-
-		let hours = parseInt(match[1]);
-		const minutes = parseInt(match[2]);
-		const period = match[3];
-		const month = parseInt(match[4]) - 1;
-		const day = parseInt(match[5]);
-		const year = parseInt(match[6]);
-
-		if (period.toUpperCase() === 'PM' && hours !== 12) hours += 12;
-		if (period.toUpperCase() === 'AM' && hours === 12) hours = 0;
-
-		const inputDate = new Date(year, month, day, hours, minutes);
+	const validateDateTime = (date: string, time: string) => {
+		if (!date || !time) return true;
+		const inputDate = new Date(date + 'T' + time);
 		if (inputDate < new Date()) {
-			return 'Invalid input: cannot input a past time.';
+			return 'Cannot select a past date and time.';
 		}
 		return true;
 	};
@@ -103,25 +103,35 @@ export default function ActivityCreationPage() {
 					</div>
 
 					<div>
-						<label className='block font-bold text-black mb-1'>Date & Time</label>
-						<div className='flex flex-col'>
-							<input
-								{...register('timeAndDate', {
-									required: 'Time and Date is required for posting an activity.',
-									pattern: {
-										value: /^[0-9]{1,2}:[0-9]{2}(AM|PM), [0-9]{2}\/[0-9]{2}\/[0-9]{4}$/i,
-										message: 'Invalid format.'
-									},
-									validate: (value: string) => validateTimeAndDate(value)
-								})}
-								placeholder=''
-								className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'
-							/>
-						</div>
-						<span className='block text-sm text-gray-600'>
-							Please enter the time and date in this format: 00:00AM, MM/DD/YYYY
-						</span>
-						{errors.timeAndDate && <span className='block text-sm text-red-400'>{errors.timeAndDate.message}</span>}
+						<label className='block font-bold text-black mb-1'>Date</label>
+						<input
+							type='date'
+							{...register('date', {
+								required: 'Date is required for posting an activity.',
+								validate: (value: string) => {
+									const { time } = getValues();
+									return validateDateTime(value, time);
+								}
+							})}
+							className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'
+						/>
+						{errors.date && <span className='text-sm text-red-400'>{errors.date.message}</span>}
+					</div>
+
+					<div>
+						<label className='block font-bold text-black mb-1'>Time</label>
+						<input
+							type='time'
+							{...register('time', {
+								required: 'Time is required for posting an activity.',
+								validate: (value: string) => {
+									const { date } = getValues();
+									return validateDateTime(date, value);
+								}
+							})}
+							className='w-full border rounded-md border-gray-200 text-black rounded-1g p-2 focus:outline-none focus:ring-2 focus:ring-sky-300'
+						/>
+						{errors.time && <span className='text-sm text-red-400'>{errors.time.message}</span>}
 					</div>
 
 					<div>
