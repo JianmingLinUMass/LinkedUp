@@ -37,6 +37,10 @@ export async function POST(req: Request) {
 			return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
 		}
 
+		if (maxAttendees <= 0) {
+			return NextResponse.json({ error: 'Maximum attendees must be greater than 0' }, { status: 400 });
+		}
+
 		const creator: Participant = {
 			username: currentUserEmail || 'anonymous',
 			avatar: '/lemon_drink.jpeg' // placeholder avatar

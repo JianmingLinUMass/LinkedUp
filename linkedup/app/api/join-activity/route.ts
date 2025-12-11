@@ -1,26 +1,21 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/mongodb';
+import Activity from '@/models/Activity';
 import mongoose from 'mongoose';
-
-const ActivitySchema = new mongoose.Schema({
-	title: String,
-	time: String,
-	location: String,
-	creator: Object,
-	maxAttendees: Number,
-	participants: Array
-});
-
-const Activity = mongoose.models.Activity || mongoose.model('Activity', ActivitySchema);
 
 export async function POST(req: Request) {
 	try {
 		await dbConnect();
 
-		const { activityId, userId, userEmail } = await req.json();
+		const { activityId, userEmail } = await req.json();
 
-		if (!activityId || !userId) {
-			return NextResponse.json({ error: 'Activity ID and User ID required' }, { status: 400 });
+		if (!activityId || !userEmail) {
+			return NextResponse.json({ error: 'Activity ID and User Email required' }, { status: 400 });
+		}
+
+		// Validate ObjectId format
+		if (!mongoose.Types.ObjectId.isValid(activityId)) {
+			return NextResponse.json({ error: 'Activity not found' }, { status: 404 });
 		}
 
 		const activity = await Activity.findById(activityId);
@@ -48,7 +43,7 @@ export async function POST(req: Request) {
 
 		await activity.save();
 
-		return NextResponse.json({ success: true, activity }, { status: 200 });
+		return NextResponse.json({ success: true, message: 'Successfully joined activity', activity }, { status: 200 });
 	} catch (err) {
 		console.error('Join activity error:', err);
 		return NextResponse.json({ error: 'Server error' }, { status: 500 });

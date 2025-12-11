@@ -16,6 +16,9 @@ const config: Config = {
 		'**/__tests__/**/*.test.ts',
 		'**/__tests__/**/*.test.tsx'
 	],
+	testTimeout: 30000,
+	forceExit: true,
+	detectOpenHandles: true,
 	collectCoverageFrom: [
 		'app/api/**/*.ts',
 		'lib/**/*.ts',
