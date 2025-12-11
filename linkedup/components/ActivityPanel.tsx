@@ -12,18 +12,22 @@ import type { ActivityPanelArgs } from '@/schemas/ActivityRelated';
 export default function ActivityPanel({activity, onCancel, onJoin, onLeave, onDelete, isJoined, isCreator}: ActivityPanelArgs) {
     return (
         <div className='fixed inset-0 bg-black/30 flex items-center justify-center'>
-            <div className='bg-white p-5 rounded-xl border w-80 text-center'>
+            <div className='bg-white p-5 rounded-xl border w-100 text-center'>
                 <h2 className='mb-4 text-lg font-bold text-sky-400'>
                     Activity Details
                 </h2>
 
                 {/* Creator Information */}
-                <div className='mb-2 flex items-center justify-between'>
-                    <span className='font-bold text-black'>Activity Creator:</span>
-                    <div className='flex items-center gap-1'>
-                        <span className='font-bold text-gray-500'>{activity.creator.username}</span>
-                        <Image src={activity.creator.avatar} alt='User Profile Picture' 
-                               width={36} height={36} className='object-cover rounded-full border border-gray-300'/>
+                <div className='space-y-2'>
+                    <div className='flex items-center justify-between'>
+                        <span className='font-bold text-black'>Activity Creator: </span>
+                        <div className='flex items-center gap-2 max-w-[180] overflow-hidden'>
+                            <span className='font-bold text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis'>
+                                {activity.creator.username}
+                            </span>
+                            <Image src={activity.creator.avatar} alt='User Profile Picture' 
+                                width={36} height={36} className='object-cover rounded-full border border-gray-300'/>
+                        </div>
                     </div>
                 </div>
 
@@ -44,30 +48,28 @@ export default function ActivityPanel({activity, onCancel, onJoin, onLeave, onDe
                         <span className='font-bold text-sky-500'>{activity.time}</span>
                     </div>
 
-                    <div className='flex justify-between items-center'>
-                        <div className='flex items-center gap-2'>
-                            <span className='font-bold text-black'>Attendees: </span>
-                            <span className='font-bold text-sky-500 w-10 text-left ml-4'>
-                                {activity.participants.length}/{activity.maxAttendees}
-                            </span>
-                        </div>
+                    <div className='flex justify-between'>
+                        <span className='font-bold text-black'>Attendees: </span>
+                        <span className='font-bold text-sky-500 text-left'>
+                            {activity.participants.length}/{activity.maxAttendees}
+                        </span>
+                    </div>
 
-                        <div className='flex items-center gap-4'>
-                            <div className='flex -space-x-3'>
-                                {/* Show the avatars of the first 4 participants */}
-                                {activity.participants.slice(0, 4).map((participant, index) => (
-                                    <Image key={index} src={participant.avatar} alt={participant.username}
-                                        width={36} height={36} className='object-cover rounded-full border border-gray-300'
-                                    />
-                                ))}
-                                
-                                {/* Show the the rest of the participants as a '+' symbol */}
-                                {activity.participants.length > 4 && (
-                                    <div className='flex w-9 h-9 text-sm text-gray-600 font-bold items-center justify-center rounded-full border border-gray-300'>
-                                        +{activity.participants.length - 4}
-                                    </div>
-                                )}
-                            </div>
+                    <div className='flex justify-end'>
+                        <div className='flex -space-x-3'>
+                            {/* Show the avatars of the first 4 participants */}
+                            {activity.participants.slice(0, 4).map((participant, index) => (
+                                <Image key={index} src={participant.avatar} alt={participant.username}
+                                    width={36} height={36} className='object-cover rounded-full border border-gray-300'
+                                />
+                            ))}
+                            
+                            {/* Show the the rest of the participants as a '+' symbol */}
+                            {activity.participants.length > 4 && (
+                                <div className='flex w-9 h-9 text-sm text-gray-600 font-bold items-center justify-center rounded-full border border-gray-300'>
+                                    +{activity.participants.length - 4}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
