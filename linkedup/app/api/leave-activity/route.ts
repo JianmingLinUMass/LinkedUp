@@ -1,17 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/mongodb';
-import mongoose from 'mongoose';
-
-const ActivitySchema = new mongoose.Schema({
-	title: String,
-	time: String,
-	location: String,
-	creator: Object,
-	maxAttendees: Number,
-	participants: Array
-});
-
-const Activity = mongoose.models.Activity || mongoose.model('Activity', ActivitySchema);
+import Activity from '@/models/Activity';
 
 export async function POST(req: Request) {
 	try {
@@ -34,7 +23,7 @@ export async function POST(req: Request) {
 
 		await activity.save();
 
-		return NextResponse.json({ success: true, activity }, { status: 200 });
+		return NextResponse.json({ success: true, message: 'Successfully left activity', activity }, { status: 200 });
 	} catch (err) {
 		console.error('Leave activity error:', err);
 		return NextResponse.json({ error: 'Server error' }, { status: 500 });
